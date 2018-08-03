@@ -5,6 +5,7 @@
 //  Created by alan king on 2018/8/3.
 //  Copyright © 2018年 alan king. All rights reserved.
 //
+#pragma once
 
 /* The classes below are not exported */
 #include <queue>

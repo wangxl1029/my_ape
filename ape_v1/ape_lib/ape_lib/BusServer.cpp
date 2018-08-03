@@ -9,9 +9,9 @@
 #include <iostream>
 #include "BusServer.hpp"
 
-namespace ns = nsAI::nsNeuronal::nsBus;
+namespace ns_ = nsAI::nsNeuronal;
 
-void ns::CBusServer::Send(std::unique_ptr<nsBus::CMessage> m)
+void ns_::CBusServer::Send(std::unique_ptr<nsBus::CMessage> m)
 {
     CActiveTarget* target = nullptr;
     if ( m->m_ID >= nsBus::CMessageId_E::CORTEX_TEST && m->m_ID < nsBus::CMessageId_E::CORTEX_ERROR )
@@ -29,7 +29,7 @@ void ns::CBusServer::Send(std::unique_ptr<nsBus::CMessage> m)
     }
 }
 
-void ns::CBusServer::Connect(CConnectiveTarget_E type, CActiveTarget* target)
+void ns_::CBusServer::Connect(CConnectiveTarget_E type, CActiveTarget* target)
 {
     switch (type)
     {

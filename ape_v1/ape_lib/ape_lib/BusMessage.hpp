@@ -36,9 +36,7 @@ namespace nsAI {
                 {
                 }
                 
-                ~CMessage() override
-                {
-                }
+                ~CMessage() override = default;
                 
                 const CMessageId_E m_ID;
                 std::unique_ptr<CObject> m_upData;

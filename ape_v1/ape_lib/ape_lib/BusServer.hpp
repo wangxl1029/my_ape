@@ -12,30 +12,28 @@
 #include "IBusServer.hpp"
 namespace nsAI{
     namespace nsNeuronal{
-        namespace nsBus{
 
-            class CBusServer : protected CActiveTarget<nsBus::CMessage>, public IBusServer
+        class CBusServer : protected CActiveTarget<nsBus::CMessage>, public IBusServer
+        {
+        public:
+            
+            CBusServer() = default;
+            ~CBusServer() final = default;
+            
+            void Send(std::unique_ptr<nsBus::CMessage> m) final;
+            void Connect(CConnectiveTarget_E type, CActiveTarget* target) final;
+
+            
+            void Kill() final
             {
-            public:
-                
-                CBusServer() = default;
-                ~CBusServer() final = default;
-                
-                void Send(std::unique_ptr<nsBus::CMessage> m) final;
-                void Connect(CConnectiveTarget_E type, CActiveTarget* target) final;
-    
-                
-                void Kill() final
-                {
-                }
-                
-            private:
-                std::atomic< CActiveTarget*> m_pInput;
-                std::atomic< CActiveTarget*> m_pOutput;
-                std::atomic< CActiveTarget*> m_pCortex;
-            };
+            }
+            
+        private:
+            std::atomic< CActiveTarget*> m_pInput;
+            std::atomic< CActiveTarget*> m_pOutput;
+            std::atomic< CActiveTarget*> m_pCortex;
+        };
 
-        } ///< nsBus
     } /// nsNeuronal
 }; ///< nsAI
                 
