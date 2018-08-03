@@ -7,8 +7,7 @@
 //
 
 #include <iostream>
-//#include "ape_lib.hpp"
-#include "ape_libPriv.hpp"
+#include "ai_commPriv.hpp"
 #include "ape.hpp"
 
 class nsAI::CSpine: public nsAI::CNoCopyable
