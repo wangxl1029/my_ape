@@ -8,31 +8,11 @@
 
 #include <iostream>
 #include "ai_priv.hpp"
-#include "ape.hpp"
+#include "ape_spine.hpp"
+#include "ape_brain.hpp"
+#include "ape_input.hpp"
 
-class nsAI::CSpine: public nsAI::CNoCopyable
-{
-public:
-    ~CSpine() final = default;
-};
-
-class nsAI::CBrain: public nsAI::CNoCopyable
-{
-public:
-    CBrain() = delete;
-    CBrain(std::shared_ptr<CSpine>) {};
-    ~CBrain() final = default;
-};
-
-class nsAI::CInput: public nsAI::CNoCopyable
-{
-public:
-    CInput() = delete;
-    CInput(std::shared_ptr<CSpine>) {};
-    ~CInput() final = default;
-};
-
-class nsAI::COutput: public nsAI::CNoCopyable
+class nsAI::CApe::COutput: public nsAI::CNoCopyable
 {
 public:
     COutput() = delete;

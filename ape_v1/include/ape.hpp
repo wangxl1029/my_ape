@@ -11,13 +11,12 @@
 
 namespace nsAI
 {
-    class CBrain;
-    class CSpine;
-    class CInput;
-    class COutput;
-    
     class CApe : public nsAI::CNoCopyable
     {
+        class CBrain;
+        class CSpine;
+        class CInput;
+        class COutput;
     public:
         CApe();
         ~CApe() final = default;

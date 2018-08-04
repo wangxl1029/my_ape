@@ -18,7 +18,7 @@ namespace nsAI{
         public:
             
             CBusServer() = default;
-            ~CBusServer() final = default;
+            ~CBusServer() override = default;
             
             void Send(std::unique_ptr<nsBus::CMessage> m) final;
             void Connect(CConnectiveTarget_E type, CActiveTarget* target) final;

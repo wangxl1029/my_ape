@@ -7,6 +7,15 @@
 /* The classes below are exported */
 #pragma GCC visibility push(default)
 
+#ifdef __APPLE__
+#   include "TargetConditionals.h"
+#   ifdef TARGET_OS_MAC
+#       include <cstdlib> // size_t
+#   else
+#       error "error environment"
+#   endif
+#endif
+
 namespace nsAI
 {
     class CObject {

@@ -20,8 +20,6 @@ namespace nsAI{
             ~CBusClient() override = default;
             
             void connect(IBusServer* bus, IBusServer::CConnectiveTarget_E target);
-            
-            
             bool isAlive() const;
            
             std::unique_ptr<nsNeuronal::nsBus::CMessage> getmsg()
@@ -38,8 +36,8 @@ namespace nsAI{
             {
                 std::atomic_store(&m_isAlive, false);
             }
-        protected:
             
+        protected:
             std::atomic_bool m_isAlive;
             CBusProxy m_bus;
         };
