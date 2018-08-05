@@ -24,10 +24,10 @@ namespace nsAI {
                 m_instinct.Initialize(this, &m_Sensor);
                 m_thread = std::thread(m_instinct);
                 
-//                m_reflect.Intialize(this, &m_Sensor, &m_Mind);
-//                m_Sensor = std::thread(m_reflect);
+                m_reflect.Intialize(this, &m_Sensor, &m_Mind);
+                m_Sensor = std::thread(m_reflect);
                 
-//                m_Mind.ComeToSense(this, &m_Memory);
+                m_Mind.ComeToSense(this);
             }
             
             ~CCortex() final = default;
