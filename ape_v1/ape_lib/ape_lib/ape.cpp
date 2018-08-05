@@ -11,14 +11,7 @@
 #include "ape_spine.hpp"
 #include "ape_brain.hpp"
 #include "ape_input.hpp"
-
-class nsAI::CApe::COutput: public nsAI::CNoCopyable
-{
-public:
-    COutput() = delete;
-    COutput(std::shared_ptr<CSpine>) {};
-    ~COutput() final = default;
-};
+#include "ape_output.hpp"
 
 nsAI::CApe::CApe()
 {
@@ -33,3 +26,15 @@ nsAI::CApe::CApe()
     m_brain.connect(&m_NeurBus);
 #endif // 0
 }
+
+void nsAI::CApe::kill()
+{
+#if 0
+    m_brain.Kill();
+    m_input.Kill();
+    m_output.Kill();
+#else
+    m_spBrain->Kill();
+#endif
+}
+

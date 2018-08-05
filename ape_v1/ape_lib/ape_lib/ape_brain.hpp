@@ -9,8 +9,9 @@
 #ifndef ape_brain_hpp
 #define ape_brain_hpp
 
-#include "BusClient.hpp"
 #include "ape.hpp"
+#include "NeurCortex.hpp"
+#include "IBusServer.hpp"
 
 class nsAI::CApe::CBrain: public nsAI::CNoCopyable
 {
@@ -18,6 +19,18 @@ public:
     CBrain() = delete;
     CBrain(std::shared_ptr<CSpine>) {};
     ~CBrain() final = default;
+    void Kill()
+    {
+        m_cortex.Kill();
+    }
+    
+    void connect(nsNeuronal::IBusServer* bus)
+    {
+        m_cortex.connect(bus, nsNeuronal::IBusServer::CConnectiveTarget_E::cortex);
+    }
+
+private:
+    nsNeuronal::CCortex m_cortex;
 };
 
 #endif /* ape_brain_hpp */

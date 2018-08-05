@@ -12,12 +12,14 @@
 #include "BusClient.hpp"
 #include "ape.hpp"
 
-class nsAI::CApe::CInput: public nsAI::CNoCopyable
+class nsAI::CApe::CInput: public nsAI::nsNeuronal::CBusClient
 {
 public:
     CInput() = delete;
-    CInput(std::shared_ptr<CSpine>) {};
+    CInput(std::shared_ptr<CSpine>);
     ~CInput() final = default;
+private:
+    static void process(CBusClient* owner);
 };
 
 

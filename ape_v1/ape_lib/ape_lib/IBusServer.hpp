@@ -8,8 +8,7 @@
 
 #ifndef BusServer_h
 #define BusServer_h
-#include "ai_priv.hpp"
-#include "BusMessage.hpp"
+#include "BusMsgTarget.hpp"
 
 namespace nsAI {
     namespace nsNeuronal{
@@ -21,7 +20,7 @@ namespace nsAI {
                 cortex, input, output
             };
             virtual void Send(std::unique_ptr<nsBus::CMessage> m) = 0;
-            virtual void Connect(CConnectiveTarget_E type, CActiveTarget<nsBus::CMessage>* target) = 0;
+            virtual void Connect(CConnectiveTarget_E type, nsBus::CMessageTarget_t* target) = 0;
             virtual ~IBusServer() = default;
         };
     }
