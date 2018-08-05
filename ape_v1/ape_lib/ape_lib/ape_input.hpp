@@ -12,12 +12,16 @@
 #include "BusClient.hpp"
 #include "ape.hpp"
 
-class nsAI::CApe::CInput: public nsAI::nsNeuronal::CBusClient
+class nsAI::CApe::CInput : public nsAI::nsNeuronal::CBusClient
 {
 public:
     CInput() = delete;
     CInput(std::shared_ptr<CSpine>);
     ~CInput() final = default;
+    void read(const char* txt)
+    {
+        bus().Send(nsNeuronal::nsBus::CMsgText::CreateUniquePtr(txt));
+    }
 private:
     static void process(CBusClient* owner);
 };

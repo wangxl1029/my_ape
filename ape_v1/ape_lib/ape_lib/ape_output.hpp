@@ -10,13 +10,16 @@
 #define ape_output_hpp
 
 #include "ape.hpp"
+#include "BusClient.hpp"
 
-class nsAI::CApe::COutput: public nsAI::CNoCopyable
+class nsAI::CApe::COutput: public nsAI::nsNeuronal::CBusClient
 {
 public:
     COutput() = delete;
-    COutput(std::shared_ptr<CSpine>) {};
+    COutput(std::shared_ptr<CSpine>);
     ~COutput() final = default;
+private:
+    static void process(CBusClient* owner);
 };
 
 #endif /* ape_output_hpp */

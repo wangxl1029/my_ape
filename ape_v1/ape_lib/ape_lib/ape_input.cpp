@@ -5,15 +5,16 @@
 //  Created by alan king on 2018/8/4.
 //  Copyright © 2018年 alan king. All rights reserved.
 //
-
+#include <cassert>
 #include <iostream>
 #include "ape_input.hpp"
 #include "ape_spine.hpp"
 
 nsAI::CApe::CInput::CInput(std::shared_ptr<CSpine> spSpine)
 {
-    auto pBusServer = dynamic_cast<nsNeuronal::IBusServer*>(spSpine.get());
-    connect(pBusServer, nsNeuronal::IBusServer::CConnectiveTarget_E::input);
+    assert(spSpine);
+    connect(spSpine.get(), nsNeuronal::IBusServer::CConnectiveTarget_E::input);
+    m_thread = std::thread(process, this);
 }
 
 void nsAI::CApe::CInput::process(CBusClient* owner)

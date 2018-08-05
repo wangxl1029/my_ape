@@ -66,7 +66,7 @@ namespace nsAI {
                 {
                 public:
                     CData(const char* s); // s must NOT be nullptr
-                    ~CData() final;
+                    ~CData() final = default;
                     
                 public:
                     std::string m_text;

@@ -15,26 +15,20 @@
 
 nsAI::CApe::CApe()
 {
-#if 1
     m_spSpine = std::make_shared<CSpine>();
     m_spBrain = std::make_shared<CBrain>(m_spSpine);
     m_spInput = std::make_shared<CInput>(m_spSpine);
     m_spOutput = std::make_shared<COutput>(m_spSpine);
-#else
-    m_input.connect(&m_NeurBus);
-    m_output.connect(&m_NeurBus);
-    m_brain.connect(&m_NeurBus);
-#endif // 0
 }
 
 void nsAI::CApe::kill()
 {
-#if 0
-    m_brain.Kill();
-    m_input.Kill();
-    m_output.Kill();
-#else
     m_spBrain->Kill();
-#endif
+    m_spInput->Kill();
+    m_spOutput->Kill();
 }
 
+void nsAI::CApe::read(const char* txt)
+{
+    m_spInput->read(txt);
+}

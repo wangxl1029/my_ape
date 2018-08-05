@@ -24,19 +24,11 @@ namespace nsAI
         void read(const char*);
         void kill();
     private:
-#if 0
-        CBrain    m_brain;
-        CInput    m_input;
-        COutput    m_output;
-        nsNeuronal::CBusServer m_NeurBus;
-#else
         std::shared_ptr<CBrain> m_spBrain;
         std::shared_ptr<CSpine> m_spSpine;
         std::shared_ptr<CInput> m_spInput;
         std::shared_ptr<COutput> m_spOutput;
-#endif
     };
-    
 }
 
 
