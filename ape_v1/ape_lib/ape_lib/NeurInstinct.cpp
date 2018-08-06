@@ -6,9 +6,26 @@
 //  Copyright © 2018年 alan king. All rights reserved.
 //
 #include <cassert>
+#include <iostream>
 #include "NeurInstinct.hpp"
 
 namespace ns_ = nsAI::nsNeuronal;
+
+ns_::CInstinct::CInstinct()
+: m_pOwner(nullptr)
+, m_pSensor(nullptr)
+, m_isSleeping(false)
+, m_isTired(false)
+, m_nHungery(0)
+, m_nCrying(0)
+{
+}
+
+void ns_::CInstinct::Initialize(nsAI::nsNeuronal::CBusClient *owner, nsAI::nsNeuronal::CEmotionTarget *sensor)
+{
+    m_pOwner = owner;
+    m_pSensor = sensor;
+}
 
 void ns_::CInstinct::operator()()
 {

@@ -17,18 +17,13 @@ class nsAI::CApe::CBrain: public nsAI::CNoCopyable
 {
 public:
     CBrain() = delete;
-    CBrain(std::shared_ptr<CSpine>) {};
+    CBrain(std::shared_ptr<CSpine>);
     ~CBrain() final = default;
     void Kill()
     {
         m_cortex.Kill();
     }
     
-    void connect(nsNeuronal::IBusServer* bus)
-    {
-        m_cortex.connect(bus, nsNeuronal::IBusServer::CConnectiveTarget_E::cortex);
-    }
-
 private:
     nsNeuronal::CCortex m_cortex;
 };

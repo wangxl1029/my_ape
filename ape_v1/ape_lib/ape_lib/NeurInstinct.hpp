@@ -19,25 +19,11 @@ namespace nsAI {
         public:
             static const size_t HANGERY_MAX = 100;
             static const size_t CRYING_MAX = 100;
-            CInstinct():m_pOwner(nullptr)
-            , m_pSensor(nullptr)
-            , m_isSleeping(false)
-            , m_isTired(false)
-            , m_nHungery(0)
-            , m_nCrying(0)
-            {
-            }
+
+            CInstinct();
+            ~CInstinct() final = default;
             
-            ~CInstinct() final
-            {
-            }
-            
-            void Initialize(CBusClient* owner, CEmotionTarget* sensor)
-            {
-                m_pOwner = owner;
-                m_pSensor = sensor;
-            }
-            
+            void Initialize(CBusClient* owner, CEmotionTarget* sensor);
             void operator()();
            
         private:

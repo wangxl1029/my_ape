@@ -17,6 +17,11 @@ nsAI::CApe::CInput::CInput(std::shared_ptr<CSpine> spSpine)
     m_thread = std::thread(process, this);
 }
 
+void nsAI::CApe::CInput::read(const char *txt)
+{
+    bus().Send(nsNeuronal::nsBus::CMsgText::CreateUniquePtr(txt));
+}
+
 void nsAI::CApe::CInput::process(CBusClient* owner)
 {
     auto &Bus = owner->bus();

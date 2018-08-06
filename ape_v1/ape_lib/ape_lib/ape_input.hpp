@@ -18,10 +18,7 @@ public:
     CInput() = delete;
     CInput(std::shared_ptr<CSpine>);
     ~CInput() final = default;
-    void read(const char* txt)
-    {
-        bus().Send(nsNeuronal::nsBus::CMsgText::CreateUniquePtr(txt));
-    }
+    void read(const char* txt);
 private:
     static void process(CBusClient* owner);
 };

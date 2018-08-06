@@ -6,6 +6,15 @@
 //  Copyright © 2018年 alan king. All rights reserved.
 //
 
+#include <cassert>
+#include "ape.hpp"
 #include "ape_brain.hpp"
+#include "ape_spine.hpp"
+
+nsAI::CApe::CBrain::CBrain(std::shared_ptr<CSpine> spSpine)
+{
+    assert(spSpine);
+    m_cortex.connect(spSpine.get(), nsNeuronal::IBusServer::CConnectiveTarget_E::cortex);
+}
 
 
