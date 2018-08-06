@@ -14,6 +14,8 @@
 #   else
 #       error "error environment"
 #   endif
+#elif defined(_WIN32)
+#	include <limits>
 #endif
 
 namespace nsAI

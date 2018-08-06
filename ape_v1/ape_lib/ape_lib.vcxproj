@@ -84,7 +84,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -152,6 +152,7 @@
     <ClInclude Include="ape_lib\ape_brain.hpp" />
     <ClInclude Include="ape_lib\ape_input.hpp" />
     <ClInclude Include="ape_lib\ape_output.hpp" />
+    <ClInclude Include="ape_lib\ape_spine.hpp" />
     <ClInclude Include="ape_lib\BusClient.hpp" />
     <ClInclude Include="ape_lib\BusMessage.hpp" />
     <ClInclude Include="ape_lib\BusMsgTarget.hpp" />

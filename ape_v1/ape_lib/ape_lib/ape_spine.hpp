@@ -8,6 +8,10 @@
 
 #ifndef ape_spine_hpp
 #define ape_spine_hpp
+#ifdef _WIN32
+#include <atomic>
+#endif // _WIN32
+
 
 #include "ape.hpp"
 #include "IBusServer.hpp"

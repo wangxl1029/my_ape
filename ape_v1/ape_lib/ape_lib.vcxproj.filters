@@ -66,6 +66,9 @@
     <ClInclude Include="ape_lib\NeurUnconsci.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ape_lib\ape_spine.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

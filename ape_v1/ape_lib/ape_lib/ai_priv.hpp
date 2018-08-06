@@ -8,6 +8,10 @@
 #pragma once
 
 /* The classes below are not exported */
+#ifdef _WIN32
+#include <mutex>
+#endif // _WIN32
+
 #include <queue>
 #include <thread>
 #include <chrono>

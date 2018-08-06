@@ -63,12 +63,12 @@ bool ns_::CThink::isCached(size_t tag)
 
 size_t ns_::CThink::getPreEmotion()
 {
-    return SIZE_T_MAX;
+	return SIZE_MAX;
 }
 
 size_t ns_::CThink::buildCached()
 {
-    return SIZE_T_MAX;
+    return SIZE_MAX;
 }
 
 void ns_::CThink::tense(std::unique_ptr<CEmotion> e)
