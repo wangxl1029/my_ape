@@ -7,15 +7,37 @@
 //
 #include <cassert>
 #include <iostream>
+#include <algorithm>
 #include "NeurConscious.hpp"
 
 namespace ns_ = nsAI::nsNeuronal;
 
-ns_::CThink::CThink()
-: m_pCortex(nullptr)
-, m_pUnconsci(nullptr)
-, m_pConscious(nullptr)
-{}
+namespace nsAI {
+    namespace nsNeuronal{
+        
+        class CEmoCached : public CObject
+        {
+        public:
+            ~CEmoCached() final = default;
+            void strengthen() {}
+        };
+        
+        class CThink::CPrivate : public CObject
+        {
+        public:
+            ~CPrivate() final = default;
+            CEmoCached* buildCached() {return nullptr;};
+            void buildAssociated() {}
+        };
+        
+        CThink::CThink()
+        : mp(std::make_shared<CPrivate>())
+        , m_pCortex(nullptr)
+        , m_pUnconsci(nullptr)
+        , m_pConscious(nullptr)
+        {}
+    }
+}
 
 void ns_::CThink::initialize(ns_::CBusClient *pCortex, ns_::CEmotionTarget *pUnconsci, ns_::CEmotionTarget *pConsci)
 {
@@ -28,6 +50,35 @@ void ns_::CThink::initialize(ns_::CBusClient *pCortex, ns_::CEmotionTarget *pUnc
     m_pConscious = pConsci;
 }
 
+bool ns_::CThink::isCached(size_t tag)
+{
+    return false;
+}
+
+size_t ns_::CThink::getPreEmotion()
+{
+    return SIZE_T_MAX;
+}
+
+size_t ns_::CThink::buildCached()
+{
+    return SIZE_T_MAX;
+}
+
+void ns_::CThink::tense(std::unique_ptr<CEmotion> e)
+{
+    std::cout << "mind: tense " << CEmotion::echo(e->m_tag) << std::endl;
+    CEmoCached* pCached = nullptr;
+    if (! isCached(e->m_tag)) {
+        pCached = mp->buildCached();
+    }
+
+    assert(pCached);
+    pCached->strengthen();
+    
+    mp->buildAssociated();
+}
+
 void ns_::CThink::operator()()
 {
     while (m_pCortex->isAlive())
@@ -35,8 +86,11 @@ void ns_::CThink::operator()()
         auto e = m_pConscious->getEmotion();
         if (e)
         {
-            std::cout << "mind: " << CEmotion::echo(e->m_tag) << std::endl;
-            
+            tense(std::move(e));
+        }
+        else
+        {
+            std::cout << "mind: idle" << std::endl;
         }
     }
 }
