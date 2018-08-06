@@ -43,11 +43,8 @@ namespace nsAI {
             CMind() = default;
             ~CMind() final = default;
             
-            void ComeToSense(CBusClient* parent)
-            {
-                m_thread = std::thread(m_think);
-            }
-            
+            CMind& operator=(std::thread&&);
+           
         private:
             CThink m_think;
         };

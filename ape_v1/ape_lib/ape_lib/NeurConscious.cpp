@@ -10,8 +10,6 @@
 #include <algorithm>
 #include "NeurConscious.hpp"
 
-namespace ns_ = nsAI::nsNeuronal;
-
 namespace nsAI {
     namespace nsNeuronal{
         
@@ -30,6 +28,12 @@ namespace nsAI {
             void buildAssociated() {}
         };
         
+        CMind &CMind::operator=(std::thread&& t)
+        {
+            m_thread = std::move(t);
+            return *this;
+        }
+        
         CThink::CThink()
         : mp(std::make_shared<CPrivate>())
         , m_pCortex(nullptr)
@@ -38,6 +42,8 @@ namespace nsAI {
         {}
     }
 }
+
+namespace ns_ = nsAI::nsNeuronal;
 
 void ns_::CThink::initialize(ns_::CBusClient *pCortex, ns_::CEmotionTarget *pUnconsci, ns_::CEmotionTarget *pConsci)
 {

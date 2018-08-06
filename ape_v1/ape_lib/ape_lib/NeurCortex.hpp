@@ -48,7 +48,8 @@ namespace nsAI {
                 m_reflect.Intialize(this, &m_Unconsci, &m_Mind);
                 m_Unconsci = std::thread(m_reflect);
                 
-                m_Mind.ComeToSense(this);
+                m_think.initialize(this, &m_Unconsci, &m_Unconsci);
+                m_Mind = std::thread(m_think);
             }
             
             ~CCortex() final = default;
@@ -123,6 +124,7 @@ namespace nsAI {
             CUnconscious m_Unconsci;
             CInstinct m_instinct;
             CReflect m_reflect;
+            CThink m_think;
         };
 
     }
