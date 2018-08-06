@@ -20,30 +20,15 @@ namespace nsAI {
             {
             }
             
-            ~CBusProxy() final
-            {
-            }
-            
+            ~CBusProxy() final = default;
+           
             CBusProxy& operator=(IBusServer* right)
             {
                 m_pBusServer.store(right);
                 return *this;
             }
             
-            void Send(std::unique_ptr<nsBus::CMessage> m)
-            {
-                static thread_local auto pBus = m_pBusServer.load();
-                
-                if (nullptr == pBus)
-                {
-                    pBus = m_pBusServer.load();
-                }
-                
-                if (pBus)
-                {
-                    pBus->Send(std::move(m));
-                }
-            }
+            void Send(std::unique_ptr<nsBus::CMessage> m);
         private:
             std::atomic<IBusServer*> m_pBusServer;
         };

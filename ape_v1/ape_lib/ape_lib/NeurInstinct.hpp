@@ -14,41 +14,7 @@
 
 namespace nsAI {
     namespace nsNeuronal{
-        class CInstinct : CObject
-        {
-        public:
-            static const size_t HANGERY_MAX = 100;
-            static const size_t CRYING_MAX = 100;
-
-            CInstinct();
-            ~CInstinct() final = default;
-            
-            void Initialize(CBusClient* owner, CEmotionTarget* sensor);
-            void operator()();
-           
-        private:
-            inline void relex()
-            {
-                if (m_nHungery > 0)
-                {
-                    if(0 == m_nHungery--)
-                        m_isTired = false;
-                }
-                
-                if (m_nCrying > 0)
-                {
-                    m_nCrying = 0;
-                }
-                
-            }
-            size_t            m_nHungery;
-            size_t            m_nCrying;
-            bool            m_isTired;
-            bool            m_isSleeping;
-            CBusClient*        m_pOwner;
-            CEmotionTarget* m_pSensor;
-        };
-        
+       
 
     }
 }

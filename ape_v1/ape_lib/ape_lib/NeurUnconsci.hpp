@@ -14,16 +14,13 @@
 
 namespace nsAI {
     namespace nsNeuronal{
-        class CSensor : public CEmotionTarget
+        class CUnconscious: public CEmotionTarget
         {
         public:
-            CSensor() = default;
+            CUnconscious() = default;
+            ~CUnconscious() final = default;
             
-            ~CSensor() final
-            {
-            }
-            
-            CSensor& operator=(std::thread&& t)
+            CUnconscious& operator=(std::thread&& t)
             {
                 m_thread = std::move(t);
                 return *this;

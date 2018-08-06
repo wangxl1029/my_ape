@@ -10,22 +10,43 @@
 #define ape_cortex_hpp
 
 #include "BusClient.hpp"
-#include "NeurMind.hpp"
-#include "NeurInstinct.hpp"
 #include "NeurUnconsci.hpp"
+#include "NeurConscious.hpp"
 
 namespace nsAI {
     namespace nsNeuronal {
+        class CInstinct : CObject
+        {
+        public:
+            static const size_t HANGERY_MAX = 100;
+            static const size_t CRYING_MAX = 100;
+            
+            CInstinct();
+            ~CInstinct() final = default;
+            
+            void Initialize(CBusClient* owner, CEmotionTarget* sensor);
+            void operator()();
+            
+        private:
+            inline void relex();
+            size_t              m_nHungery;
+            size_t              m_nCrying;
+            bool                m_isTired;
+            bool                m_isSleeping;
+            CBusClient*         m_pOwner;
+            CEmotionTarget*     m_pSensor;
+        };
+        
         class CCortex : public CBusClient
         {
         public:
             CCortex()
             {
-                m_instinct.Initialize(this, &m_Sensor);
+                m_instinct.Initialize(this, &m_Unconsci);
                 m_thread = std::thread(m_instinct);
                 
-                m_reflect.Intialize(this, &m_Sensor, &m_Mind);
-                m_Sensor = std::thread(m_reflect);
+                m_reflect.Intialize(this, &m_Unconsci, &m_Mind);
+                m_Unconsci = std::thread(m_reflect);
                 
                 m_Mind.ComeToSense(this);
             }
@@ -99,8 +120,7 @@ namespace nsAI {
 #endif // 0
             
             CMind m_Mind;
-//            CMemory m_Memory;
-            CSensor m_Sensor;
+            CUnconscious m_Unconsci;
             CInstinct m_instinct;
             CReflect m_reflect;
         };

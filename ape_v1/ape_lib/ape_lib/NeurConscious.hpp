@@ -9,11 +9,25 @@
 #ifndef ape_mind_hpp
 #define ape_mind_hpp
 
-#include "EmotionTarget.hpp"
 #include "BusClient.hpp"
+#include "EmotionTarget.hpp"
 
 namespace nsAI {
     namespace nsNeuronal{
+        class CThink
+        {
+        public:
+            CThink();
+            ~CThink() = default;
+            
+            void initialize(CBusClient* pCortex, CEmotionTarget* pUnconsci, CEmotionTarget* pConsci);
+            void operator()();
+        private:
+            CBusClient* m_pCortex;
+            CEmotionTarget* m_pUnconsci;
+            CEmotionTarget* m_pConscious;
+        };
+        
         class CMind : public CEmotionTarget
         {
         public:
@@ -22,11 +36,11 @@ namespace nsAI {
             
             void ComeToSense(CBusClient* parent)
             {
-                m_thread = std::thread(Think, parent, this);
+                m_thread = std::thread(m_think);
             }
             
         private:
-            static void Think(CBusClient* parent, CEmotionTarget* owner);
+            CThink m_think;
         };
     }
 }
