@@ -30,7 +30,7 @@ namespace nsAI {
         class CReflect : public CObject
         {
         public:
-            CReflect() : m_pCortex(nullptr), m_pSensor(nullptr)
+            CReflect() : m_pCortex(nullptr), m_pUnconsci(nullptr)
             {
             }
             ~CReflect() final = default;
@@ -39,7 +39,7 @@ namespace nsAI {
             {
                 m_pCortex = cortex;
                 m_pMind = mind;
-                m_pSensor = sensor;
+                m_pUnconsci = sensor;
             }
             
             void operator()();
@@ -51,7 +51,7 @@ namespace nsAI {
             }
             
             CBusClient * m_pCortex;
-            CEmotionTarget* m_pSensor;
+            CEmotionTarget* m_pUnconsci;
             CEmotionTarget* m_pMind;
         };
         

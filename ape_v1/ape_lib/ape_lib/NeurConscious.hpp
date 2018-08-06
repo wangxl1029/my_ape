@@ -37,16 +37,16 @@ namespace nsAI {
             std::shared_ptr<CPrivate> mp;
         };
         
-        class CMind : public CEmotionTarget
+        class CConscious : public CEmotionTarget
         {
         public:
-            CMind() = default;
-            ~CMind() final = default;
+            CConscious() = default;
+            ~CConscious() final = default;
             
-            CMind& operator=(std::thread&&);
+            CConscious& operator=(std::thread&&);
            
         private:
-            CThink m_think;
+            CThink m_cfnThink;
         };
     }
 }

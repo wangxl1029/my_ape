@@ -34,7 +34,7 @@ namespace nsAI {
             bool                m_isTired;
             bool                m_isSleeping;
             CBusClient*         m_pOwner;
-            CEmotionTarget*     m_pSensor;
+            CEmotionTarget*     m_pUnconsci;
         };
         
         class CCortex : public CBusClient
@@ -42,14 +42,14 @@ namespace nsAI {
         public:
             CCortex()
             {
-                m_instinct.Initialize(this, &m_Unconsci);
-                m_thread = std::thread(m_instinct);
+                m_cfnInstinct.Initialize(this, &m_thUnconscious);
+                m_thread = std::thread(m_cfnInstinct);
                 
-                m_reflect.Intialize(this, &m_Unconsci, &m_Mind);
-                m_Unconsci = std::thread(m_reflect);
+                m_cfnReflect.Intialize(this, &m_thUnconscious, &m_thConscious);
+                m_thUnconscious = std::thread(m_cfnReflect);
                 
-                m_think.initialize(this, &m_Unconsci, &m_Unconsci);
-                m_Mind = std::thread(m_think);
+                m_cfnThink.initialize(this, &m_thUnconscious, &m_thUnconscious);
+                m_thConscious = std::thread(m_cfnThink);
             }
             
             ~CCortex() final = default;
@@ -119,12 +119,13 @@ namespace nsAI {
             }
             
 #endif // 0
-            
-            CMind m_Mind;
-            CUnconscious m_Unconsci;
-            CInstinct m_instinct;
-            CReflect m_reflect;
-            CThink m_think;
+			// thread
+			CUnconscious	m_thUnconscious;
+			CConscious		m_thConscious;
+			// class of function
+            CInstinct		m_cfnInstinct;
+            CReflect		m_cfnReflect;
+            CThink			m_cfnThink;
         };
 
     }

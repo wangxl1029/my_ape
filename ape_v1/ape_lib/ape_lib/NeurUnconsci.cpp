@@ -15,7 +15,7 @@ void ns_::CReflect::operator()()
 {
     while (m_pCortex->isAlive())
     {
-        auto e = m_pSensor->getEmotion();
+        auto e = m_pUnconsci->getEmotion();
         if (e)
         {
             if (e->m_tag < CEmotion::EMOTION_E_MAX)

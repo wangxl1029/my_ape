@@ -13,7 +13,7 @@ namespace ns_ = nsAI::nsNeuronal;
 
 ns_::CInstinct::CInstinct()
 : m_pOwner(nullptr)
-, m_pSensor(nullptr)
+, m_pUnconsci(nullptr)
 , m_isSleeping(false)
 , m_isTired(false)
 , m_nHungery(0)
@@ -24,7 +24,7 @@ ns_::CInstinct::CInstinct()
 void ns_::CInstinct::Initialize(nsAI::nsNeuronal::CBusClient *owner, nsAI::nsNeuronal::CEmotionTarget *sensor)
 {
     m_pOwner = owner;
-    m_pSensor = sensor;
+    m_pUnconsci = sensor;
 }
 
 void ns_::CInstinct::operator()()
@@ -42,17 +42,17 @@ void ns_::CInstinct::operator()()
                 case nsBus::CMessageId_E::CORTEX_TEST:
                     if ( ! m_isSleeping)
                     {
-                        m_pSensor->Send(std::make_unique<CEmotion>(CEmotion_E::input_test));
+                        m_pUnconsci->Send(std::make_unique<CEmotion>(CEmotion_E::input_test));
                     }
                     break;
                     
                 case nsBus::CMessageId_E::CORTEX_IDLE_INPUT:
                     if ( ! m_isSleeping)
                     {
-                        m_pSensor->Send(std::make_unique<CEmotion>(CEmotion_E::input_absence));
+                        m_pUnconsci->Send(std::make_unique<CEmotion>(CEmotion_E::input_absence));
                         if (m_nHungery++ <= HANGERY_MAX)
                         {
-                            m_pSensor->Send(std::make_unique<CEmotion>(CEmotion_E::instinct_crying));
+                            m_pUnconsci->Send(std::make_unique<CEmotion>(CEmotion_E::instinct_crying));
                         }
                         
                         if (m_nCrying++ <= CRYING_MAX)
@@ -61,7 +61,7 @@ void ns_::CInstinct::operator()()
                         else
                         {
                             m_isSleeping = m_isTired = true;
-                            m_pSensor->Send(std::make_unique<CEmotion>(CEmotion_E::instinct_sleep));
+                            m_pUnconsci->Send(std::make_unique<CEmotion>(CEmotion_E::instinct_sleep));
                         }
                     }
                     else
@@ -73,7 +73,7 @@ void ns_::CInstinct::operator()()
                 case nsBus::CMessageId_E::CORTEX_TEXT_INPUT:
                     if ( ! m_isSleeping)
                     {
-                        m_pSensor->Send(std::make_unique<CEmotion>(CEmotion_E::input_txt));
+                        m_pUnconsci->Send(std::make_unique<CEmotion>(CEmotion_E::input_txt));
                     }
                     break;
                     
@@ -86,7 +86,7 @@ void ns_::CInstinct::operator()()
         else
         {
             //std::cout << "instinct idle" << std::endl;
-            m_pSensor->Send(std::make_unique<CEmotion>(CEmotion_E::instinct_idle));
+            m_pUnconsci->Send(std::make_unique<CEmotion>(CEmotion_E::instinct_idle));
         }
         
         if (m_isSleeping && m_isTired)

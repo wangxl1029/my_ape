@@ -28,7 +28,7 @@ namespace nsAI {
             void buildAssociated() {}
         };
         
-        CMind &CMind::operator=(std::thread&& t)
+        CConscious &CConscious::operator=(std::thread&& t)
         {
             m_thread = std::move(t);
             return *this;
@@ -51,9 +51,9 @@ void ns_::CThink::initialize(ns_::CBusClient *pCortex, ns_::CEmotionTarget *pUnc
     assert(pUnconsci);
     assert(pConsci);
     
-    m_pCortex = pCortex;
-    m_pUnconsci = pUnconsci;
-    m_pConscious = pConsci;
+    m_pCortex		= pCortex;
+    m_pUnconsci		= pUnconsci;
+    m_pConscious	= pConsci;
 }
 
 bool ns_::CThink::isCached(size_t tag)
