@@ -4,8 +4,10 @@
 #ifndef ai_common_
 #define ai_common_
 
+#ifdef __APPLE__
 /* The classes below are exported */
 #pragma GCC visibility push(default)
+#endif // __APPLE__
 
 #ifdef __APPLE__
 #   include "TargetConditionals.h"
@@ -34,6 +36,8 @@ namespace nsAI
     };
     
 }
-
+#ifdef __APPLE__
 #pragma GCC visibility pop
+#endif // __APPLE__
+
 #endif

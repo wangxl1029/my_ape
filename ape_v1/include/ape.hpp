@@ -6,8 +6,10 @@
 #ifndef ape_lib_
 #define ape_lib_
 
+#ifdef __APPLE__
 /* The classes below are exported */
 #pragma GCC visibility push(default)
+#endif // __APPLE__
 
 namespace nsAI
 {
@@ -31,8 +33,10 @@ namespace nsAI
     };
 }
 
-
+#ifdef __APPLE__
 #pragma GCC visibility pop
+#endif // __APPLE__
+
 #endif
 
 
