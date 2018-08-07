@@ -8,17 +8,39 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <map>
 #include <unordered_set>
 #include "NeurConscious.hpp"
 
 namespace nsAI {
     namespace nsNeuronal{
         
+		class CNeuron
+		{
+		public:
+			CNeuron()
+			{
+			}
+
+			~CNeuron()
+			{
+			}
+
+			void strengthen() {}
+		private:
+
+		};
+
+
         class CEmoCached : public CObject
         {
         public:
+			CEmoCached() = default;
+			CEmoCached(std::shared_ptr<CNeuron> spNeur);
             ~CEmoCached() final = default;
-            void strengthen() {}
+			void strengthen();
+		private:
+			std::shared_ptr<CNeuron> m_spNeuron;
         };
         
         class CThink::CPrivate : public CObject
@@ -27,19 +49,39 @@ namespace nsAI {
             ~CPrivate() final = default;
 			std::shared_ptr<CEmoCached> buildCached(size_t tag);
             void buildAssociated() {}
-			void buildNeuron() {}
+			std::shared_ptr<CNeuron> buildNeuron(size_t tag);
 			bool isCached(size_t tag);
 			void tense(std::unique_ptr<CEmotion>);
 		private:
 			std::vector<size_t> m_vecCahcedIdx;
 			std::unordered_set<size_t> m_cachedTags;
+			std::map< size_t, std::shared_ptr<CNeuron> > m_neuronalPool;
         };
         
 		inline std::shared_ptr<CEmoCached> CThink::CPrivate::buildCached(size_t tag)
 		{ 
 			m_cachedTags.emplace(tag);
-			buildNeuron();
-			return std::make_shared<CEmoCached>();
+			return std::make_shared<CEmoCached>(buildNeuron(tag));
+		}
+
+		inline std::shared_ptr<CNeuron> CThink::CPrivate::buildNeuron(size_t tag) 
+		{
+			auto it = m_neuronalPool.find(tag);
+			if (m_neuronalPool.end() == it)
+			{
+				auto ret_pair = m_neuronalPool.emplace(tag, std::make_shared<CNeuron>());
+				if (ret_pair.second)
+				{
+					it = ret_pair.first;
+				}
+				else
+				{
+					std::cerr << "abnormal map emplace" << std::endl;
+				}
+			}
+			assert(m_neuronalPool.end() != it);
+
+			return it->second;
 		}
 
 		bool CThink::CPrivate::isCached(size_t tag)
@@ -80,6 +122,19 @@ namespace nsAI {
 			m_pCortex = pCortex;
 			m_pUnconsci = pUnconsci;
 			m_pConscious = pConsci;
+		}
+
+		CEmoCached::CEmoCached(std::shared_ptr<CNeuron> spNeur) : m_spNeuron(spNeur)
+		{
+		}
+
+		inline void CEmoCached::strengthen()
+		{ 
+			assert(m_spNeuron);
+			if (m_spNeuron)
+			{
+				m_spNeuron->strengthen();
+			}
 		}
 	}
 }
