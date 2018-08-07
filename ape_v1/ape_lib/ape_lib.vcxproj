@@ -159,8 +159,10 @@
     <ClInclude Include="ape_lib\BusProxy.hpp" />
     <ClInclude Include="ape_lib\EmotionTarget.hpp" />
     <ClInclude Include="ape_lib\IBusServer.hpp" />
+    <ClInclude Include="ape_lib\NeurAxon.hpp" />
     <ClInclude Include="ape_lib\NeurConscious.hpp" />
     <ClInclude Include="ape_lib\NeurCortex.hpp" />
+    <ClInclude Include="ape_lib\NeurDendrite.hpp" />
     <ClInclude Include="ape_lib\NeurEmotion.hpp" />
     <ClInclude Include="ape_lib\NeurInstinct.hpp" />
     <ClInclude Include="ape_lib\NeurUnconsci.hpp" />
@@ -174,10 +176,11 @@
     <ClCompile Include="ape_lib\BusClient.cpp" />
     <ClCompile Include="ape_lib\BusMessage.cpp" />
     <ClCompile Include="ape_lib\BusProxy.cpp" />
-    <ClCompile Include="ape_lib\BusServer.cpp" />
     <ClCompile Include="ape_lib\EmotionTarget.cpp" />
+    <ClCompile Include="ape_lib\NeurAxon.cpp" />
     <ClCompile Include="ape_lib\NeurConscious.cpp" />
     <ClCompile Include="ape_lib\NeurCortex.cpp" />
+    <ClCompile Include="ape_lib\NeurDendrite.cpp" />
     <ClCompile Include="ape_lib\NeurEmotion.cpp" />
     <ClCompile Include="ape_lib\NeurInstinct.cpp" />
     <ClCompile Include="ape_lib\NeurUnconsci.cpp" />

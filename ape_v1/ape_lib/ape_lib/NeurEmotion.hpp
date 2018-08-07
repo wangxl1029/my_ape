@@ -29,50 +29,11 @@ namespace nsAI{
         {
         public:
             static const size_t EMOTION_E_MAX = static_cast<size_t>(CEmotion_E::max);
-            CEmotion(CEmotion_E t) : m_tag(static_cast<size_t>(t))
-            {
-                
-            }
+			CEmotion(CEmotion_E t);
+ 			~CEmotion() override = default;
             
-            ~CEmotion() override
-            {
-            }
-            
-            static std::string echo(size_t tagval)
-            {
-                std::string s = "tag unkown";
-                if (tagval < EMOTION_E_MAX)
-                {
-                    switch (static_cast<CEmotion_E>(tagval))
-                    {
-                        case CEmotion_E::input_absence:
-                            s = "input absense";
-                            break;
-                        case CEmotion_E::input_txt:
-                            s = "input text";
-                            break;
-                        case CEmotion_E::instinct_sleep:
-                            s = "instinct sleep";
-                            break;
-                        case CEmotion_E::instinct_crying:
-                            s =  "instinct crying";
-                            break;
-                        case CEmotion_E::instinct_idle:
-                            s = "instinct idle";
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                
-                return s;
-            }
-
-			static size_t getUniqueTag()
-			{
-				static std::atomic_size_t tag = EMOTION_E_MAX;
-				return tag++;
-			}
+			static std::string echo(size_t tagval);
+			static size_t getUniqueTag();
             
             bool isNotConditional() const
             {

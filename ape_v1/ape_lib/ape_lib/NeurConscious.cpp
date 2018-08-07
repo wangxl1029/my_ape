@@ -11,36 +11,11 @@
 #include <map>
 #include <unordered_set>
 #include "NeurConscious.hpp"
+#include "NeurDendrite.hpp"
+#include "NeurAxon.hpp"
 
 namespace nsAI {
     namespace nsNeuronal{
-		class CAxon;
-		class CDendrite : public CObject
-		{
-		public: // ctor/dtor
-			CDendrite() = default;
-			~CDendrite() final = default;
-			// property
-			size_t getAxonNum() const;
-			// modifier
-			void attach(std::shared_ptr<CAxon> spAxon);
-		private:
-			std::vector< std::shared_ptr<CAxon> > m_vecAxon;
-		};
-
-		class CAxon : public CObject
-		{
-		public:
-			CAxon() : m_pDendrite(nullptr)
-			{
-			}
-
-			~CAxon() final = default;
-			void attach(CDendrite*);
-		private:
-			CDendrite * m_pDendrite;
-		};
-
 
 		class CNeuron : public CObject
 		{
@@ -198,22 +173,7 @@ namespace nsAI {
 			return m_vecAxon.back();
 		}
 
-		size_t CDendrite::getAxonNum() const
-		{
-			return m_vecAxon.size();
 		}
-
-		void CDendrite::attach(std::shared_ptr<CAxon> spAxon)
-		{
-			spAxon->attach(this);
-		}
-
-		void CAxon::attach(CDendrite *pDen)
-		{
-			assert(pDen);
-			m_pDendrite = pDen;
-		}
-}
 }
 
 void nsAI::nsNeuronal::CThink::operator()()
