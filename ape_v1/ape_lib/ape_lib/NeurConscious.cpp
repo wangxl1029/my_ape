@@ -15,20 +15,18 @@
 namespace nsAI {
     namespace nsNeuronal{
         
-		class CNeuron
+		class CNeuron : public CObject
 		{
 		public:
 			CNeuron()
 			{
 			}
 
-			~CNeuron()
-			{
-			}
-
+			~CNeuron() override = default;
+			void LinkTo(std::shared_ptr<CNeuron> dest);
 			void strengthen() {}
 		private:
-
+			size_t m_strongVal;
 		};
 
 
@@ -39,6 +37,7 @@ namespace nsAI {
 			CEmoCached(std::shared_ptr<CNeuron> spNeur);
             ~CEmoCached() final = default;
 			void strengthen();
+			std::shared_ptr<CNeuron> getNeuron();
 		private:
 			std::shared_ptr<CNeuron> m_spNeuron;
         };
@@ -48,11 +47,13 @@ namespace nsAI {
         public:
             ~CPrivate() final = default;
 			std::shared_ptr<CEmoCached> buildCached(size_t tag);
-            void buildAssociated() {}
+			void buildAssociated(std::shared_ptr<CNeuron> spNeur);
 			std::shared_ptr<CNeuron> buildNeuron(size_t tag);
 			bool isCached(size_t tag);
 			void tense(std::unique_ptr<CEmotion>);
 		private:
+			std::shared_ptr<CNeuron> getPreNeuron() const;
+
 			std::vector<size_t> m_vecCahcedIdx;
 			std::unordered_set<size_t> m_cachedTags;
 			std::map< size_t, std::shared_ptr<CNeuron> > m_neuronalPool;
@@ -62,6 +63,16 @@ namespace nsAI {
 		{ 
 			m_cachedTags.emplace(tag);
 			return std::make_shared<CEmoCached>(buildNeuron(tag));
+		}
+
+		inline void CThink::CPrivate::buildAssociated(std::shared_ptr<CNeuron> spNeur) 
+		{
+			assert(spNeur);
+			auto preNeur = getPreNeuron();
+			auto newNeur = buildNeuron(CEmotion::getUniqueTag());
+			
+			spNeur->LinkTo(newNeur);
+			preNeur->LinkTo(newNeur);
 		}
 
 		inline std::shared_ptr<CNeuron> CThink::CPrivate::buildNeuron(size_t tag) 
@@ -97,7 +108,12 @@ namespace nsAI {
 
 			pCached->strengthen();
 
-			buildAssociated();
+			buildAssociated(pCached->getNeuron());
+		}
+
+		std::shared_ptr<CNeuron> CThink::CPrivate::getPreNeuron() const
+		{
+			return std::shared_ptr<CNeuron>();
 		}
 
 		CConscious &CConscious::operator=(std::thread&& t)
@@ -136,7 +152,14 @@ namespace nsAI {
 				m_spNeuron->strengthen();
 			}
 		}
-	}
+		std::shared_ptr<CNeuron> CEmoCached::getNeuron()
+		{
+			return m_spNeuron;
+		}
+		void CNeuron::LinkTo(std::shared_ptr<CNeuron> dest)
+		{
+		}
+}
 }
 
 void nsAI::nsNeuronal::CThink::operator()()

@@ -67,6 +67,12 @@ namespace nsAI{
                 
                 return s;
             }
+
+			static size_t getUniqueTag()
+			{
+				static std::atomic_size_t tag = EMOTION_E_MAX;
+				return tag++;
+			}
             
             bool isNotConditional() const
             {
