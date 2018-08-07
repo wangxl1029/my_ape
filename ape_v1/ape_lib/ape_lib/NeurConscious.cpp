@@ -31,32 +31,29 @@ namespace nsAI {
 		class CAxon : public CObject
 		{
 		public:
-			CAxon()
+			CAxon() : m_pDendrite(nullptr)
 			{
 			}
 
 			~CAxon() final = default;
-
+			void attach(CDendrite*);
 		private:
-
+			CDendrite * m_pDendrite;
 		};
 
 
 		class CNeuron : public CObject
 		{
 		public:
-			CNeuron()
-			{
-			}
-
+			CNeuron();
 			~CNeuron() override = default;
-			void LinkTo(std::shared_ptr<CNeuron> dest);
 			size_t strengthen() { return m_strongVal++; }
-			std::shared_ptr<CDendrite> buildDendrite();
-			std::shared_ptr<CAxon> buildAxon();
+			std::shared_ptr< CDendrite > buildDendrite();
+			std::shared_ptr< CAxon > buildAxon();
 		private:
 			size_t m_strongVal;
-			std::vector< std::shared_ptr<CDendrite> > m_vecDendrite;
+			std::vector< std::shared_ptr< CAxon > > m_vecAxon;
+			std::vector< std::shared_ptr< CDendrite > > m_vecDendrite;
 		};
 
         class CEmoCached : public CObject
@@ -177,33 +174,44 @@ namespace nsAI {
 		inline void CEmoCached::strengthen()
 		{ 
 			assert(m_spNeuron);
-			if (m_spNeuron)
-			{
-				m_spNeuron->strengthen();
-			}
+			m_spNeuron->strengthen();
 		}
+
 		std::shared_ptr<CNeuron> CEmoCached::getNeuron()
 		{
 			return m_spNeuron;
 		}
-		void CNeuron::LinkTo(std::shared_ptr<CNeuron> dest)
+
+		inline CNeuron::CNeuron() : m_strongVal(0)
 		{
 		}
+
 		std::shared_ptr<CDendrite> CNeuron::buildDendrite()
 		{
-			return std::make_shared<CDendrite>();
+			m_vecDendrite.push_back(std::make_shared<CDendrite>());
+			return m_vecDendrite.back();
 		}
+
 		std::shared_ptr<CAxon> CNeuron::buildAxon()
 		{
-			return std::make_shared<CAxon>();
+			m_vecAxon.push_back(std::make_shared<CAxon>());
+			return m_vecAxon.back();
 		}
+
 		size_t CDendrite::getAxonNum() const
 		{
 			return m_vecAxon.size();
 		}
+
 		void CDendrite::attach(std::shared_ptr<CAxon> spAxon)
 		{
-			
+			spAxon->attach(this);
+		}
+
+		void CAxon::attach(CDendrite *pDen)
+		{
+			assert(pDen);
+			m_pDendrite = pDen;
 		}
 }
 }
