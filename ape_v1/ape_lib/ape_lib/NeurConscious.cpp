@@ -8,6 +8,7 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <unordered_set>
 #include "NeurConscious.hpp"
 
 namespace nsAI {
@@ -24,11 +25,40 @@ namespace nsAI {
         {
         public:
             ~CPrivate() final = default;
-            CEmoCached* buildCached() {return nullptr;};
+			std::shared_ptr<CEmoCached> buildCached(size_t tag);
             void buildAssociated() {}
+			void buildNeuron() {}
+			bool isCached(size_t tag);
+			void tense(std::unique_ptr<CEmotion>);
+		private:
+			std::vector<size_t> m_vecCahcedIdx;
+			std::unordered_set<size_t> m_cachedTags;
         };
         
-        CConscious &CConscious::operator=(std::thread&& t)
+		inline std::shared_ptr<CEmoCached> CThink::CPrivate::buildCached(size_t tag)
+		{ 
+			m_cachedTags.emplace(tag);
+			buildNeuron();
+			return std::make_shared<CEmoCached>();
+		}
+
+		bool CThink::CPrivate::isCached(size_t tag)
+		{
+			return m_cachedTags.end() != m_cachedTags.find(tag);
+		}
+
+		void CThink::CPrivate::tense(std::unique_ptr<CEmotion> e)
+		{
+			std::cout << "mind: tense " << CEmotion::echo(e->m_tag) << std::endl;
+			auto pCached = buildCached(e->m_tag);
+			assert(pCached);
+
+			pCached->strengthen();
+
+			buildAssociated();
+		}
+
+		CConscious &CConscious::operator=(std::thread&& t)
         {
             m_thread = std::move(t);
             return *this;
@@ -40,59 +70,28 @@ namespace nsAI {
         , m_pUnconsci(nullptr)
         , m_pConscious(nullptr)
         {}
-    }
+
+		void CThink::initialize(CBusClient *pCortex, CEmotionTarget *pUnconsci, CEmotionTarget *pConsci)
+		{
+			assert(pCortex);
+			assert(pUnconsci);
+			assert(pConsci);
+
+			m_pCortex = pCortex;
+			m_pUnconsci = pUnconsci;
+			m_pConscious = pConsci;
+		}
+	}
 }
 
-namespace ns_ = nsAI::nsNeuronal;
-
-void ns_::CThink::initialize(ns_::CBusClient *pCortex, ns_::CEmotionTarget *pUnconsci, ns_::CEmotionTarget *pConsci)
-{
-    assert(pCortex);
-    assert(pUnconsci);
-    assert(pConsci);
-    
-    m_pCortex		= pCortex;
-    m_pUnconsci		= pUnconsci;
-    m_pConscious	= pConsci;
-}
-
-bool ns_::CThink::isCached(size_t tag)
-{
-    return false;
-}
-
-size_t ns_::CThink::getPreEmotion()
-{
-	return SIZE_MAX;
-}
-
-size_t ns_::CThink::buildCached()
-{
-    return SIZE_MAX;
-}
-
-void ns_::CThink::tense(std::unique_ptr<CEmotion> e)
-{
-    std::cout << "mind: tense " << CEmotion::echo(e->m_tag) << std::endl;
-    CEmoCached* pCached = nullptr;
-    if (! isCached(e->m_tag)) {
-        pCached = mp->buildCached();
-    }
-
-    assert(pCached);
-    pCached->strengthen();
-    
-    mp->buildAssociated();
-}
-
-void ns_::CThink::operator()()
+void nsAI::nsNeuronal::CThink::operator()()
 {
     while (m_pCortex->isAlive())
     {
         auto e = m_pConscious->getEmotion();
         if (e)
         {
-            tense(std::move(e));
+			mp-> tense(std::move(e));
         }
         else
         {
@@ -100,3 +99,4 @@ void ns_::CThink::operator()()
         }
     }
 }
+
