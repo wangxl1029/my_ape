@@ -14,7 +14,34 @@
 
 namespace nsAI {
     namespace nsNeuronal{
-        
+		class CAxon;
+		class CDendrite : public CObject
+		{
+		public: // ctor/dtor
+			CDendrite() = default;
+			~CDendrite() final = default;
+			// property
+			size_t getAxonNum() const;
+			// modifier
+			void attach(std::shared_ptr<CAxon> spAxon);
+		private:
+			std::vector< std::shared_ptr<CAxon> > m_vecAxon;
+		};
+
+		class CAxon : public CObject
+		{
+		public:
+			CAxon()
+			{
+			}
+
+			~CAxon() final = default;
+
+		private:
+
+		};
+
+
 		class CNeuron : public CObject
 		{
 		public:
@@ -24,11 +51,13 @@ namespace nsAI {
 
 			~CNeuron() override = default;
 			void LinkTo(std::shared_ptr<CNeuron> dest);
-			void strengthen() {}
+			size_t strengthen() { return m_strongVal++; }
+			std::shared_ptr<CDendrite> buildDendrite();
+			std::shared_ptr<CAxon> buildAxon();
 		private:
 			size_t m_strongVal;
+			std::vector< std::shared_ptr<CDendrite> > m_vecDendrite;
 		};
-
 
         class CEmoCached : public CObject
         {
@@ -65,14 +94,15 @@ namespace nsAI {
 			return std::make_shared<CEmoCached>(buildNeuron(tag));
 		}
 
-		inline void CThink::CPrivate::buildAssociated(std::shared_ptr<CNeuron> spNeur) 
+		inline void CThink::CPrivate::buildAssociated(std::shared_ptr<CNeuron> curNeur) 
 		{
-			assert(spNeur);
+			assert(curNeur);
 			auto preNeur = getPreNeuron();
 			auto newNeur = buildNeuron(CEmotion::getUniqueTag());
-			
-			spNeur->LinkTo(newNeur);
-			preNeur->LinkTo(newNeur);
+			auto spDendrite = newNeur->buildDendrite();
+
+			spDendrite->attach(preNeur->buildAxon());
+			spDendrite->attach(curNeur->buildAxon());
 		}
 
 		inline std::shared_ptr<CNeuron> CThink::CPrivate::buildNeuron(size_t tag) 
@@ -158,6 +188,22 @@ namespace nsAI {
 		}
 		void CNeuron::LinkTo(std::shared_ptr<CNeuron> dest)
 		{
+		}
+		std::shared_ptr<CDendrite> CNeuron::buildDendrite()
+		{
+			return std::make_shared<CDendrite>();
+		}
+		std::shared_ptr<CAxon> CNeuron::buildAxon()
+		{
+			return std::make_shared<CAxon>();
+		}
+		size_t CDendrite::getAxonNum() const
+		{
+			return m_vecAxon.size();
+		}
+		void CDendrite::attach(std::shared_ptr<CAxon> spAxon)
+		{
+			
 		}
 }
 }
