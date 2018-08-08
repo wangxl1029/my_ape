@@ -8,28 +8,14 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
-#include <map>
+#include <set>
 #include <unordered_set>
 #include "NeurConscious.hpp"
-#include "NeurDendrite.hpp"
-#include "NeurAxon.hpp"
+#include "NeuronDef.hpp"
+
 
 namespace nsAI {
     namespace nsNeuronal{
-
-		class CNeuron : public CObject
-		{
-		public:
-			CNeuron();
-			~CNeuron() override = default;
-			size_t strengthen() { return m_strongVal++; }
-			std::shared_ptr< CDendrite > buildDendrite();
-			std::shared_ptr< CAxon > buildAxon();
-		private:
-			size_t m_strongVal;
-			std::vector< std::shared_ptr< CAxon > > m_vecAxon;
-			std::vector< std::shared_ptr< CDendrite > > m_vecDendrite;
-		};
 
         class CEmoCached : public CObject
         {
@@ -46,20 +32,27 @@ namespace nsAI {
         class CThink::CPrivate : public CObject
         {
         public:
+			CPrivate();
             ~CPrivate() final = default;
 			std::shared_ptr<CEmoCached> buildCached(size_t tag);
 			void buildAssociated(std::shared_ptr<CNeuron> spNeur);
-			std::shared_ptr<CNeuron> buildNeuron(size_t tag);
 			bool isCached(size_t tag);
 			void tense(std::unique_ptr<CEmotion>);
 		private:
 			std::shared_ptr<CNeuron> getPreNeuron() const;
 
-			std::vector<size_t> m_vecCahcedIdx;
+			std::shared_ptr<CTagIndex> m_tagIndex;
 			std::unordered_set<size_t> m_cachedTags;
-			std::map< size_t, std::shared_ptr<CNeuron> > m_neuronalPool;
+			std::set< std::shared_ptr<CNeuron>, CNeuron::SPtrLess > m_neuronalPool;
+			std::shared_ptr<CNeuronPool> m_spNearPool;
         };
         
+		CThink::CPrivate::CPrivate() 
+			: m_tagIndex(std::make_shared<CTagIndex>())
+			, m_spNearPool(std::make_shared<CNeuronPool>())
+		{
+		}
+
 		inline std::shared_ptr<CEmoCached> CThink::CPrivate::buildCached(size_t tag)
 		{ 
 			m_cachedTags.emplace(tag);
@@ -70,31 +63,9 @@ namespace nsAI {
 		{
 			assert(curNeur);
 			auto preNeur = getPreNeuron();
-			auto newNeur = buildNeuron(CEmotion::getUniqueTag());
-			auto spDendrite = newNeur->buildDendrite();
-
-			spDendrite->attach(preNeur->buildAxon());
-			spDendrite->attach(curNeur->buildAxon());
-		}
-
-		inline std::shared_ptr<CNeuron> CThink::CPrivate::buildNeuron(size_t tag) 
-		{
-			auto it = m_neuronalPool.find(tag);
-			if (m_neuronalPool.end() == it)
-			{
-				auto ret_pair = m_neuronalPool.emplace(tag, std::make_shared<CNeuron>());
-				if (ret_pair.second)
-				{
-					it = ret_pair.first;
-				}
-				else
-				{
-					std::cerr << "abnormal map emplace" << std::endl;
-				}
-			}
-			assert(m_neuronalPool.end() != it);
-
-			return it->second;
+			CAssociateBuilder b(m_tagIndex, m_spNearPool);
+			b.add(getPreNeuron());
+			b.add(curNeur);
 		}
 
 		bool CThink::CPrivate::isCached(size_t tag)
@@ -157,23 +128,7 @@ namespace nsAI {
 			return m_spNeuron;
 		}
 
-		inline CNeuron::CNeuron() : m_strongVal(0)
-		{
-		}
-
-		std::shared_ptr<CDendrite> CNeuron::buildDendrite()
-		{
-			m_vecDendrite.push_back(std::make_shared<CDendrite>());
-			return m_vecDendrite.back();
-		}
-
-		std::shared_ptr<CAxon> CNeuron::buildAxon()
-		{
-			m_vecAxon.push_back(std::make_shared<CAxon>());
-			return m_vecAxon.back();
-		}
-
-		}
+	}
 }
 
 void nsAI::nsNeuronal::CThink::operator()()

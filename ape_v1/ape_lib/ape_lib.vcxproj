@@ -165,6 +165,7 @@
     <ClInclude Include="ape_lib\NeurDendrite.hpp" />
     <ClInclude Include="ape_lib\NeurEmotion.hpp" />
     <ClInclude Include="ape_lib\NeurInstinct.hpp" />
+    <ClInclude Include="ape_lib\NeuronDef.hpp" />
     <ClInclude Include="ape_lib\NeurUnconsci.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +184,7 @@
     <ClCompile Include="ape_lib\NeurDendrite.cpp" />
     <ClCompile Include="ape_lib\NeurEmotion.cpp" />
     <ClCompile Include="ape_lib\NeurInstinct.cpp" />
+    <ClCompile Include="ape_lib\NeuronDef.cpp" />
     <ClCompile Include="ape_lib\NeurUnconsci.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

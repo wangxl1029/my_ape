@@ -18,6 +18,9 @@
 #   endif
 #elif defined(_WIN32)
 #	include <limits>
+#	ifndef SIZE_T_MAX
+#	define SIZE_T_MAX std::numeric_limits<size_t>::max()
+#	endif // SIZE_T_MAX
 #endif
 
 namespace nsAI
