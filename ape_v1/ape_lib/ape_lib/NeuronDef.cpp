@@ -40,33 +40,6 @@ namespace nsAI {
 			return less(lhs, rhs);
 		}
 
-		inline CAssociateBuilder::CAssociateBuilder(std::shared_ptr<CTagIndex> spIdx, std::shared_ptr<CNeuronPool> spPool)
-			: m_spTagIdx(spIdx)
-			, m_spNeurPool(spPool)
-		{}
-
-		CAssociateBuilder::~CAssociateBuilder()
-		{
-			auto spTags = std::make_shared< CTagIndex::TagVec_t >();
-
-			std::for_each(m_vecNeuron.begin(), m_vecNeuron.end(), 
-				[spTags](std::shared_ptr<CNeuron> spN) {spTags->push_back(spN->m_tag); });
-
-			if (m_spTagIdx->Insert(spTags))
-			{
-				auto newNeur = m_spNeurPool->buildNeuron(CEmotion::getUniqueTag());
-				auto spDendrite = newNeur->buildDendrite();
-
-				std::for_each(m_vecNeuron.begin(), m_vecNeuron.end(), 
-					[spDendrite](std::shared_ptr<CNeuron> spN) {spDendrite->attach(spN->buildAxon()); });
-			}
-		}
-
-		void CAssociateBuilder::add(std::shared_ptr<CNeuron> spNeur)
-		{
-			m_vecNeuron.push_back(spNeur);
-		}
-
 		bool CTagIndex::TagVecSptrLess::operator()(TagVec_sptr lhs, TagVec_sptr rhs) const
 		{
 			bool isLess = lhs->size() < rhs->size();

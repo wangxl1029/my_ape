@@ -1,5 +1,6 @@
 #pragma once
 #include <set>
+#include <tuple>
 #include "NeurDendrite.hpp"
 #include "NeurAxon.hpp"
 namespace nsAI {
@@ -49,19 +50,5 @@ namespace nsAI {
 		private:
 			std::set< std::shared_ptr<CNeuron>, CNeuron::SPtrLess > m_data;
 		};
-
-		class CAssociateBuilder : public CObject
-		{
-		public:
-			CAssociateBuilder() = delete;
-			CAssociateBuilder(std::shared_ptr<CTagIndex>spIdx, std::shared_ptr<CNeuronPool> spPool);
-			~CAssociateBuilder() final;
-			void add(std::shared_ptr<CNeuron>);
-		private:
-			std::shared_ptr<CTagIndex> m_spTagIdx;
-			std::shared_ptr<CNeuronPool> m_spNeurPool;
-			std::vector< std::shared_ptr< CNeuron > > m_vecNeuron;
-		};
-
 	}
 }
