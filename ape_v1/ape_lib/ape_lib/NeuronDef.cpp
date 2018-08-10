@@ -2,6 +2,7 @@
 #include "NeuronDef.hpp"
 #include "NeurEmotion.hpp"
 
+
 namespace nsAI {
 	namespace nsNeuronal {
 
@@ -66,5 +67,24 @@ namespace nsAI {
 			auto ret_pair = m_data.emplace(std::make_shared<CNeuron>(tag));
 			return *ret_pair.first;
 		}
+        
+        class CNeuronPool::CCursor : public CNoCopyable
+        {
+        public:
+            CCursor(decltype(m_data.begin()) it) : m_it(it) {}
+            ~CCursor() final = default;
+            decltype(m_data.begin()) m_it;
+        };
+        
+        std::unique_ptr<CNoCopyable> CNeuronPool::getFirst()
+        {
+            return std::make_unique<CCursor>(m_data.begin());
+        }
+        
+        std::shared_ptr<CNeuron> CNeuronPool::getNext(CNoCopyable* cursor)
+        {
+            auto pCur = dynamic_cast<CNeuronPool::CCursor*>(cursor);
+            return pCur ? *(pCur->m_it++) : nullptr;
+        }
 	}
 }

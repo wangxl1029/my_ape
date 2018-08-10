@@ -44,9 +44,18 @@ namespace nsAI {
 
 		class CNeuronPool : public CObject
 		{
+            class CCursor;
 		public:
 			~CNeuronPool() final = default;
 			std::shared_ptr<CNeuron> buildNeuron(size_t tag);
+            // property
+            size_t getNeuronalNum() const
+            {
+                return m_data.size();
+            }
+            
+            std::unique_ptr<CNoCopyable> getFirst();
+            std::shared_ptr<CNeuron> getNext(CNoCopyable*);
 		private:
 			std::set< std::shared_ptr<CNeuron>, CNeuron::SPtrLess > m_data;
 		};

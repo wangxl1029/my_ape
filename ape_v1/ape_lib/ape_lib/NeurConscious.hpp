@@ -38,12 +38,8 @@ namespace nsAI {
             ~CConscious() final = default;
             
             CConscious& operator=(std::thread&&);
-           
-        private:
-            CThink m_cfnThink;
         };
     }
 }
-
 
 #endif /* ape_mind_hpp */

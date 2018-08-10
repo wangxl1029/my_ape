@@ -6,7 +6,7 @@
 //  Copyright © 2018 alan king. All rights reserved.
 //
 #include <cassert>
-#include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <set>
 #include <unordered_set>
@@ -33,8 +33,13 @@ namespace nsAI {
         {
         public:
 			CPrivate();
-            ~CPrivate() final = default;
+            ~CPrivate() final;
 			void tense(std::unique_ptr<CEmotion>);
+            std::ofstream& log()
+            {
+                m_log << "[think]";
+                return m_log;
+            }
 		private:
 
 			std::set<size_t> m_tagUndupped;
@@ -42,17 +47,29 @@ namespace nsAI {
 			std::shared_ptr<CTagIndex> m_tagIndex;
 			std::vector< std::shared_ptr< CNeuron > > m_vecUndupNeuron;
 			std::shared_ptr<CNeuronPool> m_spNeurPool;
+            std::ofstream m_log;
         };
         
 		CThink::CPrivate::CPrivate() 
 			: m_tagIndex(std::make_shared<CTagIndex>())
 			, m_spNeurPool(std::make_shared<CNeuronPool>())
 		{
+            m_log.open("/Users/alanking/Documents/my_AI/my_github/my_ape/ape_v1/ape_lib/think.log");
 		}
+        CThink::CPrivate::~CPrivate()
+        {
+            auto neurNum =m_spNeurPool->getNeuronalNum();
+            log() << "all neuron number : " << neurNum << std::endl;
+            auto upCur = m_spNeurPool->getFirst();
+            for (size_t i = 0 ; i < neurNum; i++) {
+                auto spNeur = m_spNeurPool->getNext(upCur.get());
+                log() << "tag[" << spNeur->m_tag << "]" << std::endl;
+            }
+        }
 
 		void CThink::CPrivate::tense(std::unique_ptr<CEmotion> e)
 		{
-			std::cout << "mind: tense " << CEmotion::echo(e->m_tag) << std::endl;
+			log() << "tense " << CEmotion::echo(e->m_tag) << std::endl;
 
 			auto curNeur = m_spNeurPool->buildNeuron(e->m_tag);
 			curNeur->strengthen();
@@ -132,11 +149,11 @@ void nsAI::nsNeuronal::CThink::operator()()
         auto e = m_pConscious->getEmotion();
         if (e)
         {
-			mp-> tense(std::move(e));
+			mp->tense(std::move(e));
         }
         else
         {
-            std::cout << "mind: idle" << std::endl;
+            mp->log() << "idle" << std::endl;
         }
     }
 }
