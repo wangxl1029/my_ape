@@ -70,7 +70,11 @@ namespace nsAI {
 					auto newNeur = m_spNeurPool->buildNeuron(CEmotion::getUniqueTag());
 					auto spDendrite = newNeur->buildDendrite();
 					std::for_each(m_vecUndupNeuron.begin(), m_vecUndupNeuron.end(),
-						[spDendrite](std::shared_ptr<CNeuron> spN) {spDendrite->attach(spN->buildAxon()); });
+						[spDendrite](std::shared_ptr<CNeuron> spN) {
+                            auto spAxon = spN->buildAxon();
+                            spDendrite->attach(spAxon);
+                            spAxon->attach(spDendrite);
+                        });
 					m_vecUndupNeuron.clear();
 					m_tagUndupped.clear();
 				}

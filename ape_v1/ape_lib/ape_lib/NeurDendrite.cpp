@@ -8,9 +8,9 @@ namespace nsAI {
 			return m_vecAxon.size();
 		}
 
-		inline void CDendrite::attach(std::shared_ptr<CAxon> spAxon)
+        void CDendrite::attach(std::shared_ptr<CAxon> spAxon)
 		{
-			spAxon->attach(this);
+            m_vecAxon.push_back(spAxon);
 		}
 	}
 }

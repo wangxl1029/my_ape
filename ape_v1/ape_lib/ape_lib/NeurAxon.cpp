@@ -1,17 +1,18 @@
 #include <cassert>
 #include "NeurAxon.hpp"
+#include "NeurDendrite.hpp"
 
 namespace nsAI
 {
 	namespace nsNeuronal
 	{
-		inline CAxon::CAxon() : m_pDendrite(nullptr)
+        CAxon::CAxon() : m_pDendrite(nullptr)
 		{
 		}
-		inline void CAxon::attach(CDendrite * pDen)
+        void CAxon::attach(std::shared_ptr<CDendrite> spDen)
 		{
-			assert(pDen);
-			m_pDendrite = pDen;
+			assert(spDen);
+			m_pDendrite = spDen;
 		}
 	}
 }

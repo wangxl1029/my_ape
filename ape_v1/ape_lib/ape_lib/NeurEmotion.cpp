@@ -9,12 +9,34 @@
 #include <atomic>
 #include "NeurEmotion.hpp"
 
-inline nsAI::nsNeuronal::CEmotion::CEmotion(CEmotion_E t) : m_tag(static_cast<size_t>(t))
+namespace nsAI {
+    
+    class CTagGenerator : public CNoCopyable
+    {
+    public:
+        CTagGenerator() : CTagGenerator(0)
+        {
+        }
+        CTagGenerator(size_t tagVal)
+        {
+            m_tagUnique.store(tagVal);
+        }
+        inline size_t getUniqueTag()
+        {
+            return m_tagUnique++;
+        }
+        ~CTagGenerator() final = default;
+    private:
+        std::atomic_size_t m_tagUnique;
+    };
+}
+
+nsAI::nsNeuronal::CEmotion::CEmotion(CEmotion_E t) : m_tag(static_cast<size_t>(t))
 {
 
 }
 
-inline std::string nsAI::nsNeuronal::CEmotion::echo(size_t tagval)
+std::string nsAI::nsNeuronal::CEmotion::echo(size_t tagval)
 {
 	std::string s = "tag unkown";
 	if (tagval < EMOTION_E_MAX)
@@ -44,8 +66,8 @@ inline std::string nsAI::nsNeuronal::CEmotion::echo(size_t tagval)
 	return s;
 }
 
-inline size_t nsAI::nsNeuronal::CEmotion::getUniqueTag()
+size_t nsAI::nsNeuronal::CEmotion::getUniqueTag()
 {
-	static std::atomic_size_t tag = EMOTION_E_MAX;
-	return tag++;
+    static CTagGenerator gen(EMOTION_E_MAX);
+	return gen.getUniqueTag();
 }

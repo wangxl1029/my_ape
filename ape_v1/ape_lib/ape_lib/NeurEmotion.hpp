@@ -33,7 +33,7 @@ namespace nsAI{
  			~CEmotion() override = default;
             
 			static std::string echo(size_t tagval);
-			static size_t getUniqueTag();
+            static size_t getUniqueTag();
             
             bool isNotConditional() const
             {

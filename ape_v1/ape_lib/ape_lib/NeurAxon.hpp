@@ -1,4 +1,7 @@
-#pragma once
+#ifndef _neuronal_axon_hpp_
+#define _neuronal_axon_hpp_
+
+#include <memory>
 #include "ai_comm.hpp"
 
 namespace nsAI
@@ -11,11 +14,12 @@ namespace nsAI
 		public:
 			CAxon();
 			~CAxon() final = default;
-			void attach(CDendrite*);
+			void attach(std::shared_ptr<CDendrite>);
 		private:
-			CDendrite * m_pDendrite;
+			std::shared_ptr<CDendrite> m_pDendrite;
 		};
 
 
 	}
 }
+#endif
