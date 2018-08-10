@@ -5,6 +5,14 @@
 #include "NeurAxon.hpp"
 namespace nsAI {
 	namespace nsNeuronal {
+        template<class _T>
+        class IAccessor : public CNoCopyable
+        {
+        public:
+            ~IAccessor() override = default;
+            virtual std::unique_ptr<CNoCopyable> getFirst() = 0;
+            virtual typename _T::value_type getNext(CNoCopyable*) = 0;
+        };
 		
 		class CNeuron : public CObject
 		{
@@ -15,12 +23,18 @@ namespace nsAI {
 			size_t strengthen() { return m_strongVal++; }
 			std::shared_ptr< CDendrite > buildDendrite();
 			std::shared_ptr< CAxon > buildAxon();
-
+            // accessor
+            std::unique_ptr< CNoCopyable > getFirstDendrite();
+            std::unique_ptr< CNoCopyable > getNextDendrite(CNoCopyable*);
+            std::shared_ptr< CAxon > getFirstAxon();
+            std::shared_ptr< CAxon > getNextAxon(CNoCopyable*);
+            // prediction
 			struct SPtrLess {
 				bool operator()(std::shared_ptr<CNeuron>, std::shared_ptr<CNeuron>) const;
 			};
 			static bool less(const CNeuron&, const CNeuron&);
 			static bool less(std::shared_ptr<CNeuron>, std::shared_ptr<CNeuron>);
+            // attributes
 			const size_t m_tag;
 		private:
 			size_t m_strongVal;
@@ -44,7 +58,6 @@ namespace nsAI {
 
 		class CNeuronPool : public CObject
 		{
-            class CCursor;
 		public:
 			~CNeuronPool() final = default;
 			std::shared_ptr<CNeuron> buildNeuron(size_t tag);
@@ -56,8 +69,12 @@ namespace nsAI {
             
             std::unique_ptr<CNoCopyable> getFirst();
             std::shared_ptr<CNeuron> getNext(CNoCopyable*);
+            
 		private:
 			std::set< std::shared_ptr<CNeuron>, CNeuron::SPtrLess > m_data;
+        public:
+            typedef IAccessor<decltype(m_data)> DataAccessor_t;
+            std::unique_ptr<DataAccessor_t> getAccessor();
 		};
 	}
 }

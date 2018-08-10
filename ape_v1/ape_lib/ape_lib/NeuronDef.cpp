@@ -1,11 +1,33 @@
 #include <algorithm>
 #include "NeuronDef.hpp"
 #include "NeurEmotion.hpp"
-
+#include "neur_priv.hpp"
 
 namespace nsAI {
 	namespace nsNeuronal {
 
+        template<class _T>
+        class CAccessor : public IAccessor<_T>
+        {
+        public:
+            CAccessor(typename _T::iterator b, typename _T::iterator e)
+            : m_begin(b), m_end(e) {}
+            ~CAccessor() final = default;
+            std::unique_ptr<CNoCopyable> getFirst()
+            {
+                return std::make_unique<CCursor<_T>>(m_begin);
+            }
+            typename _T::value_type getNext(CNoCopyable* cursor)
+            {
+                auto pCur = dynamic_cast<CCursor<_T>*>(cursor);
+                return *(pCur->mIt++);
+            }
+            typename _T::iterator m_begin;
+            typename _T::iterator m_end;
+        };
+        
+
+        
 		inline CNeuron::CNeuron() :CNeuron(SIZE_T_MAX)
 		{
 		}
@@ -68,23 +90,20 @@ namespace nsAI {
 			return *ret_pair.first;
 		}
         
-        class CNeuronPool::CCursor : public CNoCopyable
-        {
-        public:
-            CCursor(decltype(m_data.begin()) it) : m_it(it) {}
-            ~CCursor() final = default;
-            decltype(m_data.begin()) m_it;
-        };
-        
         std::unique_ptr<CNoCopyable> CNeuronPool::getFirst()
         {
-            return std::make_unique<CCursor>(m_data.begin());
+            return std::make_unique<CCursor<decltype(m_data)>>(m_data.begin());
         }
         
         std::shared_ptr<CNeuron> CNeuronPool::getNext(CNoCopyable* cursor)
         {
-            auto pCur = dynamic_cast<CNeuronPool::CCursor*>(cursor);
-            return pCur ? *(pCur->m_it++) : nullptr;
+            auto pCur = dynamic_cast<CCursor<decltype(m_data)>*>(cursor);
+            return pCur ? *(pCur->mIt++) : nullptr;
+        }
+        
+        std::unique_ptr< CNeuronPool::DataAccessor_t > CNeuronPool::getAccessor()
+        {
+            return std::make_unique<CAccessor<decltype(m_data)>>(m_data.begin(), m_data.end());
         }
 	}
 }

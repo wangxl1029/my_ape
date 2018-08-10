@@ -58,11 +58,12 @@ namespace nsAI {
 		}
         CThink::CPrivate::~CPrivate()
         {
+            auto acc = m_spNeurPool->getAccessor();
             auto neurNum =m_spNeurPool->getNeuronalNum();
             log() << "all neuron number : " << neurNum << std::endl;
-            auto upCur = m_spNeurPool->getFirst();
+            auto upCur = acc->getFirst();
             for (size_t i = 0 ; i < neurNum; i++) {
-                auto spNeur = m_spNeurPool->getNext(upCur.get());
+                auto spNeur = acc->getNext(upCur.get());
                 log() << "tag[" << spNeur->m_tag << "]" << std::endl;
             }
         }
