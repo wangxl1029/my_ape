@@ -16,18 +16,6 @@
 
 namespace nsAI {
     namespace nsNeuronal{
-
-        class CEmoCached : public CObject
-        {
-        public:
-			CEmoCached() = default;
-			CEmoCached(std::shared_ptr<CNeuron> spNeur);
-            ~CEmoCached() final = default;
-			void strengthen();
-			std::shared_ptr<CNeuron> getNeuron();
-		private:
-			std::shared_ptr<CNeuron> m_spNeuron;
-        };
         
         class CThink::CPrivate : public CObject
         {
@@ -124,22 +112,6 @@ namespace nsAI {
 			m_pUnconsci = pUnconsci;
 			m_pConscious = pConsci;
 		}
-
-		CEmoCached::CEmoCached(std::shared_ptr<CNeuron> spNeur) : m_spNeuron(spNeur)
-		{
-		}
-
-		inline void CEmoCached::strengthen()
-		{ 
-			assert(m_spNeuron);
-			m_spNeuron->strengthen();
-		}
-
-		std::shared_ptr<CNeuron> CEmoCached::getNeuron()
-		{
-			return m_spNeuron;
-		}
-
 	}
 }
 
