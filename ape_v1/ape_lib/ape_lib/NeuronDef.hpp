@@ -10,6 +10,7 @@ namespace nsAI {
         {
         public:
             ~IAccessor() override = default;
+            virtual typename _T::size_type getSize() const = 0;
             virtual std::unique_ptr<CNoCopyable> getFirst() = 0;
             virtual typename _T::value_type getNext(CNoCopyable*) = 0;
         };
@@ -21,13 +22,8 @@ namespace nsAI {
 			CNeuron(size_t tag);
 			~CNeuron() override = default;
 			size_t strengthen() { return m_strongVal++; }
-			std::shared_ptr< CDendrite > buildDendrite();
+			std::shared_ptr< CDendrite > buildDendrite(std::shared_ptr<CNeuron> spOwner);
 			std::shared_ptr< CAxon > buildAxon();
-            // accessor
-            std::unique_ptr< CNoCopyable > getFirstDendrite();
-            std::unique_ptr< CNoCopyable > getNextDendrite(CNoCopyable*);
-            std::shared_ptr< CAxon > getFirstAxon();
-            std::shared_ptr< CAxon > getNextAxon(CNoCopyable*);
             // prediction
 			struct SPtrLess {
 				bool operator()(std::shared_ptr<CNeuron>, std::shared_ptr<CNeuron>) const;
@@ -40,6 +36,12 @@ namespace nsAI {
 			size_t m_strongVal;
 			std::vector< std::shared_ptr< CAxon > > m_vecAxon;
 			std::vector< std::shared_ptr< CDendrite > > m_vecDendrite;
+        public:
+            // accessor
+            typedef IAccessor< decltype(m_vecAxon) > AxonAccessor_t;
+            typedef IAccessor< decltype(m_vecDendrite) > DendriAccessor_t;
+            std::unique_ptr<AxonAccessor_t> getAxonAccessor();
+            std::unique_ptr<DendriAccessor_t> getDendriAccessor();
 		};
 
 		class CTagIndex : public CObject
@@ -73,8 +75,8 @@ namespace nsAI {
 		private:
 			std::set< std::shared_ptr<CNeuron>, CNeuron::SPtrLess > m_data;
         public:
-            typedef IAccessor<decltype(m_data)> DataAccessor_t;
-            std::unique_ptr<DataAccessor_t> getAccessor();
+            typedef IAccessor< decltype(m_data) > DataAccessor_t;
+            std::unique_ptr< DataAccessor_t > getAccessor();
 		};
 	}
 }

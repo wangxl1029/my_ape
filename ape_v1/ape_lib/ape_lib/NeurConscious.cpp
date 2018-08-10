@@ -46,13 +46,24 @@ namespace nsAI {
 		}
         CThink::CPrivate::~CPrivate()
         {
-            auto acc = m_spNeurPool->getAccessor();
-            auto neurNum =m_spNeurPool->getNeuronalNum();
+            auto upPoolAcc = m_spNeurPool->getAccessor();
+            auto neurNum =upPoolAcc->getSize();
             log() << "all neuron number : " << neurNum << std::endl;
-            auto upCur = acc->getFirst();
+            auto upCur = upPoolAcc->getFirst();
             for (size_t i = 0 ; i < neurNum; i++) {
-                auto spNeur = acc->getNext(upCur.get());
-                log() << "tag[" << spNeur->m_tag << "]" << std::endl;
+                auto spNeur = upPoolAcc->getNext(upCur.get());
+                auto upAxonAcc = spNeur->getAxonAccessor();
+                auto upDenAcc = spNeur->getDendriAccessor();
+                log() << "tag[" << spNeur->m_tag << "] : " << CEmotion::echo(spNeur->m_tag) << std::endl;
+                log() << "\t" << upAxonAcc->getSize() << " axon(s), " << upDenAcc->getSize() << " dendrite(s)" << std::endl;
+                // log the axon info
+                auto upAxonCur = upAxonAcc->getFirst();
+                for (size_t i = 0; i < upAxonAcc->getSize(); i++) {
+                    auto spAxon = upAxonAcc->getNext(upAxonCur.get());
+                    auto spDadDendri = spAxon->getDendrite();
+                    auto destTag = spDadDendri->getOwner()->m_tag;
+                    log() << "\taxon[" << i << "] --> neuron[" << destTag << "] : " << CEmotion::echo(destTag) << std::endl;
+                }
             }
         }
 
@@ -74,7 +85,7 @@ namespace nsAI {
 				if (isIdxOK && spIdx->size() > 1)
 				{
 					auto newNeur = m_spNeurPool->buildNeuron(CEmotion::getUniqueTag());
-					auto spDendrite = newNeur->buildDendrite();
+					auto spDendrite = newNeur->buildDendrite(newNeur);
 					std::for_each(m_vecUndupNeuron.begin(), m_vecUndupNeuron.end(),
 						[spDendrite](std::shared_ptr<CNeuron> spN) {
                             auto spAxon = spN->buildAxon();

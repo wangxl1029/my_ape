@@ -10,20 +10,22 @@ namespace nsAI {
         class CAccessor : public IAccessor<_T>
         {
         public:
-            CAccessor(typename _T::iterator b, typename _T::iterator e)
-            : m_begin(b), m_end(e) {}
+            CAccessor(typename _T::iterator b, typename _T::iterator e, typename _T::size_type s)
+            : m_begin(b), m_end(e), m_size(s) {}
             ~CAccessor() final = default;
-            std::unique_ptr<CNoCopyable> getFirst()
+            typename _T::size_type getSize() const final {return m_size;}
+            std::unique_ptr<CNoCopyable> getFirst()final
             {
                 return std::make_unique<CCursor<_T>>(m_begin);
             }
-            typename _T::value_type getNext(CNoCopyable* cursor)
+            typename _T::value_type getNext(CNoCopyable* cursor) final
             {
                 auto pCur = dynamic_cast<CCursor<_T>*>(cursor);
                 return *(pCur->mIt++);
             }
             typename _T::iterator m_begin;
             typename _T::iterator m_end;
+            typename _T::size_type m_size;
         };
         
 
@@ -36,9 +38,9 @@ namespace nsAI {
 		{
 		}
 
-		std::shared_ptr<CDendrite> CNeuron::buildDendrite()
+		std::shared_ptr<CDendrite> CNeuron::buildDendrite(std::shared_ptr<CNeuron> spOwner)
 		{
-			m_vecDendrite.push_back(std::make_shared<CDendrite>());
+			m_vecDendrite.push_back(std::make_shared<CDendrite>(spOwner));
 			return m_vecDendrite.back();
 		}
 
@@ -62,8 +64,18 @@ namespace nsAI {
 		{
 			return less(lhs, rhs);
 		}
+        
+        std::unique_ptr< CNeuron::AxonAccessor_t > CNeuron::getAxonAccessor()
+        {
+            return std::make_unique< CAccessor< decltype(m_vecAxon) > >(m_vecAxon.begin(), m_vecAxon.end(), m_vecAxon.size());
+        }
 
-		bool CTagIndex::TagVecSptrLess::operator()(TagVec_sptr lhs, TagVec_sptr rhs) const
+        std::unique_ptr< CNeuron::DendriAccessor_t > CNeuron::getDendriAccessor()
+        {
+            return std::make_unique< CAccessor< decltype(m_vecDendrite) > >(m_vecDendrite.begin(), m_vecDendrite.end(), m_vecDendrite.size());
+        }
+
+        bool CTagIndex::TagVecSptrLess::operator()(TagVec_sptr lhs, TagVec_sptr rhs) const
 		{
 			bool isLess = lhs->size() < rhs->size();
 			if (lhs->size() == rhs->size())
@@ -103,7 +115,7 @@ namespace nsAI {
         
         std::unique_ptr< CNeuronPool::DataAccessor_t > CNeuronPool::getAccessor()
         {
-            return std::make_unique<CAccessor<decltype(m_data)>>(m_data.begin(), m_data.end());
+            return std::make_unique< CAccessor< decltype(m_data) > >(m_data.begin(), m_data.end(), m_data.size());
         }
 	}
 }
