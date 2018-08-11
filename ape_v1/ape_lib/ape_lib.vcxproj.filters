@@ -72,6 +72,15 @@
     <ClInclude Include="ape_lib\NeuronDef.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ape_lib\neur_priv.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ape_lib\CAccessor.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ape_lib\IAccessor.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ape_lib\ape.cpp">
@@ -123,6 +132,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ape_lib\NeuronDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ape_lib\neur_priv.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

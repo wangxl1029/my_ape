@@ -46,8 +46,13 @@ namespace nsAI {
 			: m_tagIndex(std::make_shared<CTagIndex>())
 			, m_spNeurPool(std::make_shared<CNeuronPool>())
 		{
-            m_log.open("/Users/alanking/Documents/my_AI/my_github/my_ape/ape_v1/ape_lib/think.log");
-		}
+#ifdef _WIN32
+			char log_path[] = R"(C:\Users\win 10\think.log)";
+#elif defined(__APPLE__)
+			char log_path[] = "/Users/alanking/Documents/my_AI/my_github/my_ape/ape_v1/ape_lib/think.log";
+#endif // _WIN32
+			m_log.open(log_path);
+ 		}
         CThink::CPrivate::~CPrivate()
         {
         }
