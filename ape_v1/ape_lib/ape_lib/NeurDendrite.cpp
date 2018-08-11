@@ -2,6 +2,7 @@
 #include "NeurAxon.hpp"
 #include "NeurDendrite.hpp"
 #include "NeuronDef.hpp"
+#include "CAccessor.hpp"
 namespace nsAI {
 	namespace nsNeuronal {
         CDendrite::CDendrite(std::shared_ptr<CNeuron> spOwner)
@@ -22,6 +23,11 @@ namespace nsAI {
         std::shared_ptr<CNeuron> CDendrite::getOwner() const
         {
             return m_spOwner;
+        }
+        
+        std::unique_ptr<CDendrite::AxonAccessor_t> CDendrite::getAxonAccessor()
+        {
+            return std::make_unique< CAccessor< decltype(m_vecAxon) > >(m_vecAxon.begin(), m_vecAxon.end(), m_vecAxon.size());
         }
 	}
 }

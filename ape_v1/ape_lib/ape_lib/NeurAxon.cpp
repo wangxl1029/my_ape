@@ -6,7 +6,9 @@ namespace nsAI
 {
 	namespace nsNeuronal
 	{
-        CAxon::CAxon(std::shared_ptr<CNeuron> spOwner) : m_spDendrite(nullptr)
+        CAxon::CAxon(std::shared_ptr<CNeuron> spOwner)
+        : m_spOwner(spOwner)
+        , m_spDendrite(nullptr)
 		{
 		}
         
@@ -19,6 +21,11 @@ namespace nsAI
         std::shared_ptr<CDendrite> CAxon::getDendrite() const
         {
             return m_spDendrite;
+        }
+        
+        std::shared_ptr<CNeuron> CAxon::getOwner() const
+        {
+            return m_spOwner;
         }
 	}
 }

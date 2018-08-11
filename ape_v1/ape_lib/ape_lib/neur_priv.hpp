@@ -12,14 +12,6 @@
 #include "ai_comm.hpp"
 
 namespace nsAI {
-    template<class _T>
-    struct CCursor : public CNoCopyable
-    {
-        CCursor(typename _T::iterator it) : mIt(it) {}
-        ~CCursor() final = default;
-        typename _T::iterator mIt;
-    };
-    
 }
 
 #endif /* neur_priv_hpp */

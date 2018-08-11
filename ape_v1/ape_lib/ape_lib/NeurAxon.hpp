@@ -17,6 +17,7 @@ namespace nsAI
 			~CAxon() final = default;
 			void attach(std::shared_ptr<CDendrite>);
             std::shared_ptr<CDendrite> getDendrite() const;
+            std::shared_ptr<CNeuron> getOwner() const;
 		private:
 			std::shared_ptr<CDendrite> m_spDendrite;
             std::shared_ptr<CNeuron> m_spOwner;

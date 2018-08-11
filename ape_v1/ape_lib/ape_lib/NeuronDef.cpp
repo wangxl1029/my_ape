@@ -2,42 +2,11 @@
 #include "NeuronDef.hpp"
 #include "NeurEmotion.hpp"
 #include "neur_priv.hpp"
+#include "CAccessor.hpp"
 
 namespace nsAI {
 	namespace nsNeuronal {
 
-        template<class _T>
-        class CAccessor : public IAccessor<_T>
-        {
-        public:
-            CAccessor(typename _T::iterator b, typename _T::iterator e, typename _T::size_type s)
-            : m_begin(b), m_end(e), m_size(s) {}
-            ~CAccessor() final = default;
-            // access method
-            typename _T::size_type getSize() const final {return m_size;}
-            std::unique_ptr<CNoCopyable> getFirst()final
-            {
-                return std::make_unique<CCursor<_T>>(m_begin);
-            }
-            typename _T::value_type getNext(CNoCopyable* cursor) final
-            {
-                auto pCur = dynamic_cast<CCursor<_T>*>(cursor);
-                return *(pCur->mIt++);
-            }
-            bool isEnded(CNoCopyable* cursor) const final
-            {
-                auto pCur = dynamic_cast<CCursor<_T>*>(cursor);
-                return m_end == pCur->mIt;
-            }
-            void reset(CNoCopyable* cursor) final
-            {
-                dynamic_cast<CCursor<_T>*>(cursor)->mIt = m_begin;
-            }
-            typename _T::iterator m_begin;
-            typename _T::iterator m_end;
-            typename _T::size_type m_size;
-        };
-        
 
         
 		inline CNeuron::CNeuron() :CNeuron(SIZE_T_MAX)

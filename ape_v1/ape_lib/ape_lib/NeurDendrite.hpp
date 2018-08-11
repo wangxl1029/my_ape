@@ -2,6 +2,8 @@
 #include <memory>
 #include <vector>
 #include "ai_comm.hpp"
+#include "IAccessor.hpp"
+#include "NeuronDef.hpp"
 
 namespace nsAI {
 	namespace nsNeuronal {
@@ -23,6 +25,8 @@ namespace nsAI {
         public:
             // accessor
             std::shared_ptr<CNeuron> getOwner() const;
+            typedef IAccessor< decltype(m_vecAxon) > AxonAccessor_t;
+            std::unique_ptr< AxonAccessor_t > getAxonAccessor();
 		};
 
 	}

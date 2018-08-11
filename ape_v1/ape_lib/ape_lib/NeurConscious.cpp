@@ -28,6 +28,8 @@ namespace nsAI {
                 m_log << "[think]";
                 return m_log;
             }
+            
+            void dump();
 		private:
 
 			std::set<size_t> m_tagUndupped;
@@ -46,6 +48,8 @@ namespace nsAI {
 		}
         CThink::CPrivate::~CPrivate()
         {
+        }
+        void CThink::CPrivate::dump() {
             auto upPoolAcc = m_spNeurPool->getAccessor();
             auto neurNum =upPoolAcc->getSize();
             log() << "all neuron number : " << neurNum << std::endl;
@@ -53,9 +57,8 @@ namespace nsAI {
             for (size_t i = 0 ; i < neurNum; i++) {
                 auto spNeur = upPoolAcc->getNext(upCur.get());
                 auto upAxonAcc = spNeur->getAxonAccessor();
-                auto upDenAcc = spNeur->getDendriAccessor();
                 log() << "tag[" << spNeur->m_tag << "] : " << CEmotion::echo(spNeur->m_tag) << std::endl;
-                log() << "\t" << upAxonAcc->getSize() << " axon(s), " << upDenAcc->getSize() << " dendrite(s)" << std::endl;
+                log() << "\t" << upAxonAcc->getSize() << " axon(s), " << std::endl;
                 // log the axon info
                 auto upAxonCur = upAxonAcc->getFirst();
                 for (size_t i = 0; i < upAxonAcc->getSize(); i++) {
@@ -63,6 +66,23 @@ namespace nsAI {
                     auto spDadDendri = spAxon->getDendrite();
                     auto destTag = spDadDendri->getOwner()->m_tag;
                     log() << "\taxon[" << i << "] --> neuron[" << destTag << "] : " << CEmotion::echo(destTag) << std::endl;
+                }
+                
+                auto upDenAcc = spNeur->getDendriAccessor();
+                log() << "\t" << upDenAcc->getSize() << " dendrite(s)" << std::endl;
+                auto upDendriCur = upDenAcc->getFirst();
+                size_t denCnt = 0;
+                while ( ! upDenAcc->isEnded(upDendriCur.get())) {
+                    auto spDendri = upDenAcc->getNext(upDendriCur.get());
+                    auto upDenAxnAcc = spDendri->getAxonAccessor();
+                    log() << "\t\tden["<< denCnt++ << "] " << upDenAxnAcc->getSize() << "axon(s)" << std::endl;
+                    
+                    auto upDenAxnCur = upDenAxnAcc->getFirst();
+                    while ( ! upDenAxnAcc->isEnded(upDenAxnCur.get())) {
+                        auto spDenAxn = upDenAxnAcc->getNext(upDenAxnCur.get());
+                        auto spDenAxnOwnerNeur = spDenAxn->getOwner();
+                        log() << "\t\t\t--> neuron " << spDenAxnOwnerNeur->m_tag << " : " << CEmotion::echo(spDenAxnOwnerNeur->m_tag) << std::endl;
+                    }
                 }
             }
         }
@@ -140,5 +160,7 @@ void nsAI::nsNeuronal::CThink::operator()()
             mp->log() << "idle" << std::endl;
         }
     }
+    
+    mp->dump();
 }
 

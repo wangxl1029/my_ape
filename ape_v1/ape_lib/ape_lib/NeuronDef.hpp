@@ -3,20 +3,9 @@
 #include <tuple>
 #include "NeurDendrite.hpp"
 #include "NeurAxon.hpp"
+#include "IAccessor.hpp"
 namespace nsAI {
 	namespace nsNeuronal {
-        template<class _T>
-        class IAccessor : public CNoCopyable
-        {
-        public:
-            ~IAccessor() override = default;
-            virtual typename _T::size_type getSize() const = 0;
-            virtual std::unique_ptr<CNoCopyable> getFirst() = 0;
-            virtual typename _T::value_type getNext(CNoCopyable*) = 0;
-            virtual bool isEnded(CNoCopyable*) const = 0;
-            virtual void reset(CNoCopyable*) = 0;
-        };
-		
 		class CNeuron : public CObject
 		{
 		public:
