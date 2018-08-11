@@ -10,6 +10,24 @@ INDEX
 
 #### Release Note
 
+##### V1.1.0
+
+为了MAC/Windows平台都能编译ape，所以做了refactor，把原来的单一文件main分解成了各个模块的文件。
+
+###### Feature List
+- [x] Refactor : 原来的CMemory分解到各个Module里去了。
+- [x] Refactor : 模块Mind变更为Conscious。
+- [x] Refactor : think由静态方法变更为类。
+- [x] Implement : assessor / iterator pattern.
+- [x] Implement : axon / drentrite, neuron.
+
+###### Todo List
+（略）
+###### Iusse
+（无）
+###### Conception
+构建多层的neuronal layers, 放弃原来的instinct, unconscious/conscious的结构。
+
 ##### V1.0.1
 
 原计划conscious/unconscious共享同一个neuronal net的数据，这会引起两个线程的数据竞争。所会有个读写锁的做成，但C++ 11读写锁的支持没有，所以这个事儿也没做完。
