@@ -17,13 +17,13 @@ ns_::CBusClient::CBusClient() : m_isAlive(true)
 
 void ns_::CBusClient::connect(IBusServer* bus, IBusServer::CConnectiveTarget_E target)
 {
-    assert(bus);
-    bus->Connect(target, this);
-    m_bus = bus;
+	assert(bus);
+	bus->Connect(target, this);
+	m_bus = bus;
 }
 
 bool ns_::CBusClient::isAlive() const
 {
-    return m_isAlive.load();
+	return m_isAlive.load();
 }
 

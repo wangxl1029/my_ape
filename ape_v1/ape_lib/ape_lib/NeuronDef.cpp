@@ -8,7 +8,7 @@ namespace nsAI {
 	namespace nsNeuronal {
 
 
-        
+
 		inline CNeuron::CNeuron() :CNeuron(SIZE_T_MAX)
 		{
 		}
@@ -23,7 +23,7 @@ namespace nsAI {
 			return m_vecDendrite.back();
 		}
 
-        std::shared_ptr<CAxon> CNeuron::buildAxon(std::shared_ptr<CNeuron> spOwner)
+		std::shared_ptr<CAxon> CNeuron::buildAxon(std::shared_ptr<CNeuron> spOwner)
 		{
 			m_vecAxon.push_back(std::make_shared<CAxon>(spOwner));
 			return m_vecAxon.back();
@@ -43,18 +43,18 @@ namespace nsAI {
 		{
 			return less(lhs, rhs);
 		}
-        
-        std::unique_ptr< CNeuron::AxonAccessor_t > CNeuron::getAxonAccessor()
-        {
-            return std::make_unique< CAccessor< decltype(m_vecAxon) > >(m_vecAxon.begin(), m_vecAxon.end(), m_vecAxon.size());
-        }
 
-        std::unique_ptr< CNeuron::DendriAccessor_t > CNeuron::getDendriAccessor()
-        {
-            return std::make_unique< CAccessor< decltype(m_vecDendrite) > >(m_vecDendrite.begin(), m_vecDendrite.end(), m_vecDendrite.size());
-        }
+		std::unique_ptr< CNeuron::AxonAccessor_t > CNeuron::getAxonAccessor()
+		{
+			return std::make_unique< CAccessor< decltype(m_vecAxon) > >(m_vecAxon.begin(), m_vecAxon.end(), m_vecAxon.size());
+		}
 
-        bool CTagIndex::TagVecSptrLess::operator()(TagVec_sptr lhs, TagVec_sptr rhs) const
+		std::unique_ptr< CNeuron::DendriAccessor_t > CNeuron::getDendriAccessor()
+		{
+			return std::make_unique< CAccessor< decltype(m_vecDendrite) > >(m_vecDendrite.begin(), m_vecDendrite.end(), m_vecDendrite.size());
+		}
+
+		bool CTagIndex::TagVecSptrLess::operator()(TagVec_sptr lhs, TagVec_sptr rhs) const
 		{
 			bool isLess = lhs->size() < rhs->size();
 			if (lhs->size() == rhs->size())
@@ -80,10 +80,10 @@ namespace nsAI {
 			auto ret_pair = m_data.emplace(std::make_shared<CNeuron>(tag));
 			return *ret_pair.first;
 		}
-        
-        std::unique_ptr< CNeuronPool::DataAccessor_t > CNeuronPool::getAccessor()
-        {
-            return std::make_unique< CAccessor< decltype(m_data) > >(m_data.begin(), m_data.end(), m_data.size());
-        }
+
+		std::unique_ptr< CNeuronPool::DataAccessor_t > CNeuronPool::getAccessor()
+		{
+			return std::make_unique< CAccessor< decltype(m_data) > >(m_data.begin(), m_data.end(), m_data.size());
+		}
 	}
 }

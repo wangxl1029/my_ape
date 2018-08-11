@@ -11,15 +11,15 @@
 
 void nsAI::nsNeuronal::CBusProxy::Send(std::unique_ptr<nsBus::CMessage> m)
 {
-    static thread_local auto pBus = m_pBusServer.load();
-    
-    if (nullptr == pBus)
-    {
-        pBus = m_pBusServer.load();
-    }
-    
-    if (pBus)
-    {
-        pBus->Send(std::move(m));
-    }
+	static thread_local auto pBus = m_pBusServer.load();
+
+	if (nullptr == pBus)
+	{
+		pBus = m_pBusServer.load();
+	}
+
+	if (pBus)
+	{
+		pBus->Send(std::move(m));
+	}
 }

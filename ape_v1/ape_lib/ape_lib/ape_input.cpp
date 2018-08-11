@@ -12,36 +12,36 @@
 
 nsAI::CApe::CInput::CInput(std::shared_ptr<CSpine> spSpine)
 {
-    assert(spSpine);
-    connect(spSpine.get(), nsNeuronal::IBusServer::CConnectiveTarget_E::input);
-    m_thread = std::thread(process, this);
+	assert(spSpine);
+	connect(spSpine.get(), nsNeuronal::IBusServer::CConnectiveTarget_E::input);
+	m_thread = std::thread(process, this);
 }
 
 void nsAI::CApe::CInput::read(const char *txt)
 {
-    bus().Send(nsNeuronal::nsBus::CMsgText::CreateUniquePtr(txt));
+	bus().Send(nsNeuronal::nsBus::CMsgText::CreateUniquePtr(txt));
 }
 
 void nsAI::CApe::CInput::process(CBusClient* owner)
 {
-    auto &Bus = owner->bus();
-    while (owner->isAlive())
-    {
-        auto msg = owner->getmsg();
-        if (msg)
-        {
-            switch (msg->m_ID)
-            {
-                case nsNeuronal::nsBus::CMessageId_E::INPUT_TEST:
-                    std::cout << "ape input test" << std::endl;
-                    break;
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            Bus.Send(nsNeuronal::nsBus::CMsgIdleInput::CreateUniquePtr());
-        }
-    }
+	auto &Bus = owner->bus();
+	while (owner->isAlive())
+	{
+		auto msg = owner->getmsg();
+		if (msg)
+		{
+			switch (msg->m_ID)
+			{
+			case nsNeuronal::nsBus::CMessageId_E::INPUT_TEST:
+				std::cout << "ape input test" << std::endl;
+				break;
+			default:
+				break;
+			}
+		}
+		else
+		{
+			Bus.Send(nsNeuronal::nsBus::CMsgIdleInput::CreateUniquePtr());
+		}
+	}
 }
