@@ -2,7 +2,7 @@
 #define _neuronal_axon_hpp_
 
 #include <memory>
-#include "ai_comm.hpp"
+#include "NeuronDef.hpp"
 
 namespace nsAI
 {
@@ -12,15 +12,15 @@ namespace nsAI
 		class CAxon : public CObject
 		{
 		public:
-			CAxon();
+            CAxon() = delete;
+            CAxon(std::shared_ptr<CNeuron> spOwner);
 			~CAxon() final = default;
 			void attach(std::shared_ptr<CDendrite>);
             std::shared_ptr<CDendrite> getDendrite() const;
 		private:
 			std::shared_ptr<CDendrite> m_spDendrite;
+            std::shared_ptr<CNeuron> m_spOwner;
 		};
-
-
 	}
 }
 #endif

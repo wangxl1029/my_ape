@@ -77,18 +77,18 @@ namespace nsAI {
 
 			bool ok, isIdxOK = false;
 			std::tie(std::ignore, ok) = m_tagUndupped.insert(e->m_tag);
-			if ( ! ok)
+			if (( ! ok)  && m_tagUndupped.size() > 1)
 			{
 				auto spIdx = std::make_shared<CTagIndex::TagVec_t>();
 				spIdx->swap(m_tagSeq);
 				isIdxOK = m_tagIndex->Insert(spIdx);
-				if (isIdxOK && spIdx->size() > 1)
+				if (isIdxOK)
 				{
 					auto newNeur = m_spNeurPool->buildNeuron(CEmotion::getUniqueTag());
 					auto spDendrite = newNeur->buildDendrite(newNeur);
 					std::for_each(m_vecUndupNeuron.begin(), m_vecUndupNeuron.end(),
 						[spDendrite](std::shared_ptr<CNeuron> spN) {
-                            auto spAxon = spN->buildAxon();
+                            auto spAxon = spN->buildAxon(spN);
                             spDendrite->attach(spAxon);
                             spAxon->attach(spDendrite);
                         });

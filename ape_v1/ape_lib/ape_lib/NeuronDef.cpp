@@ -13,6 +13,7 @@ namespace nsAI {
             CAccessor(typename _T::iterator b, typename _T::iterator e, typename _T::size_type s)
             : m_begin(b), m_end(e), m_size(s) {}
             ~CAccessor() final = default;
+            // access method
             typename _T::size_type getSize() const final {return m_size;}
             std::unique_ptr<CNoCopyable> getFirst()final
             {
@@ -22,6 +23,15 @@ namespace nsAI {
             {
                 auto pCur = dynamic_cast<CCursor<_T>*>(cursor);
                 return *(pCur->mIt++);
+            }
+            bool isEnded(CNoCopyable* cursor) const final
+            {
+                auto pCur = dynamic_cast<CCursor<_T>*>(cursor);
+                return m_end == pCur->mIt;
+            }
+            void reset(CNoCopyable* cursor) final
+            {
+                dynamic_cast<CCursor<_T>*>(cursor)->mIt = m_begin;
             }
             typename _T::iterator m_begin;
             typename _T::iterator m_end;
@@ -44,9 +54,9 @@ namespace nsAI {
 			return m_vecDendrite.back();
 		}
 
-		std::shared_ptr<CAxon> CNeuron::buildAxon()
+        std::shared_ptr<CAxon> CNeuron::buildAxon(std::shared_ptr<CNeuron> spOwner)
 		{
-			m_vecAxon.push_back(std::make_shared<CAxon>());
+			m_vecAxon.push_back(std::make_shared<CAxon>(spOwner));
 			return m_vecAxon.back();
 		}
 
@@ -101,17 +111,6 @@ namespace nsAI {
 			auto ret_pair = m_data.emplace(std::make_shared<CNeuron>(tag));
 			return *ret_pair.first;
 		}
-        
-        std::unique_ptr<CNoCopyable> CNeuronPool::getFirst()
-        {
-            return std::make_unique<CCursor<decltype(m_data)>>(m_data.begin());
-        }
-        
-        std::shared_ptr<CNeuron> CNeuronPool::getNext(CNoCopyable* cursor)
-        {
-            auto pCur = dynamic_cast<CCursor<decltype(m_data)>*>(cursor);
-            return pCur ? *(pCur->mIt++) : nullptr;
-        }
         
         std::unique_ptr< CNeuronPool::DataAccessor_t > CNeuronPool::getAccessor()
         {

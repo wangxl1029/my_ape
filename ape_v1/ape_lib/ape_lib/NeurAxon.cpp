@@ -6,7 +6,7 @@ namespace nsAI
 {
 	namespace nsNeuronal
 	{
-        CAxon::CAxon() : m_spDendrite(nullptr)
+        CAxon::CAxon(std::shared_ptr<CNeuron> spOwner) : m_spDendrite(nullptr)
 		{
 		}
         

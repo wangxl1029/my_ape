@@ -13,6 +13,8 @@ namespace nsAI {
             virtual typename _T::size_type getSize() const = 0;
             virtual std::unique_ptr<CNoCopyable> getFirst() = 0;
             virtual typename _T::value_type getNext(CNoCopyable*) = 0;
+            virtual bool isEnded(CNoCopyable*) const = 0;
+            virtual void reset(CNoCopyable*) = 0;
         };
 		
 		class CNeuron : public CObject
@@ -23,7 +25,7 @@ namespace nsAI {
 			~CNeuron() override = default;
 			size_t strengthen() { return m_strongVal++; }
 			std::shared_ptr< CDendrite > buildDendrite(std::shared_ptr<CNeuron> spOwner);
-			std::shared_ptr< CAxon > buildAxon();
+			std::shared_ptr< CAxon > buildAxon(std::shared_ptr<CNeuron> spOwner);
             // prediction
 			struct SPtrLess {
 				bool operator()(std::shared_ptr<CNeuron>, std::shared_ptr<CNeuron>) const;
@@ -63,15 +65,6 @@ namespace nsAI {
 		public:
 			~CNeuronPool() final = default;
 			std::shared_ptr<CNeuron> buildNeuron(size_t tag);
-            // property
-            size_t getNeuronalNum() const
-            {
-                return m_data.size();
-            }
-            
-            std::unique_ptr<CNoCopyable> getFirst();
-            std::shared_ptr<CNeuron> getNext(CNoCopyable*);
-            
 		private:
 			std::set< std::shared_ptr<CNeuron>, CNeuron::SPtrLess > m_data;
         public:
