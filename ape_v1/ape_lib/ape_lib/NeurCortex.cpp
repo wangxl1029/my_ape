@@ -16,6 +16,7 @@
 #include "NeurUnconsci.hpp"
 #include "NeurConscious.hpp"
 #include "NeurCortex.hpp"
+//#include "NeurLayer.hpp"
 
 namespace ns_ = nsAI::nsNeuronal;
 
@@ -38,6 +39,7 @@ void ns_::CInstinct::Initialize(nsAI::nsNeuronal::CBusClient *owner, nsAI::nsNeu
 void ns_::CInstinct::operator()()
 {
 	assert(m_pOwner);
+//    auto spNL = std::make_shared<CLayer>();
 
 	while (m_pOwner->isAlive())
 	{

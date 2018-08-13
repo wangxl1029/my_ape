@@ -5,7 +5,8 @@
 //  Created by alan king on 2018/8/10.
 //  Copyright © 2018 alan king. All rights reserved.
 //
-
+#include <algorithm>
+#include <cassert>
 #include <memory>
 #include <set>
 #include <vector>
@@ -16,23 +17,29 @@
 #include "NeurLayer.hpp"
 
 namespace nsAI {
+    namespace nsContPred{
+        template<class _T>
+        inline bool isSizeLess(const _T &lhs, const _T &rhs) {return lhs.size() < rhs.size();}
+
+        template<class _T>
+        inline bool isSizeEqual(const _T &lhs, const _T &rhs) {return lhs.size() == rhs.size();}
+        
+        template<class _T>
+        inline bool isLessAsSizequal(const _T &lhs, const _T &rhs){
+            auto res_pair = std::mismatch(lhs.begin(), lhs.end(), rhs.begin());
+            return  lhs.end() == res_pair.first ? false : (*res_pair.first) < (*res_pair.second);
+        }
+        
+        template<class _T>
+        inline bool isLess(const _T &lhs, const _T &rhs){
+            return isSizeEqual(lhs, rhs) ? isLessAsSizequal(lhs, rhs) : isSizeLess(lhs, rhs);
+        }
+    }
+    
     namespace nsNeuronal{
         bool CTagIndex::operator<(const CTagIndex& rhs) const
         {
-            auto &lhs = *this;
-            bool isLess = lhs.m_tagSeq.size() < rhs.m_tagSeq.size();
-            if (lhs.m_tagSeq.size() == rhs.m_tagSeq.size())
-            {
-                size_t i = 0;
-                for (; i < lhs.m_tagSeq.size() && lhs.m_tagSeq.at(i) == rhs.m_tagSeq.at(i); i++)
-                    ;// do nothing
-                if (i < lhs.m_tagSeq.size())
-                {
-                    isLess = lhs.m_tagSeq.at(i) < rhs.m_tagSeq.at(i);
-                }
-            }
-            
-            return isLess;
+            return nsContPred::isLess(this->m_tagSeq, rhs.m_tagSeq);
         }
         
         size_t CTagIndex::Size() const
