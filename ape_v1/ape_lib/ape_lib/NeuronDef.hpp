@@ -1,11 +1,11 @@
 #pragma once
-#include <set>
-#include <tuple>
-#include "NeurDendrite.hpp"
-#include "NeurAxon.hpp"
-#include "IAccessor.hpp"
+//#include "NeurDendrite.hpp"
+//#include "NeurAxon.hpp"
+//#include "IAccessor.hpp"
 namespace nsAI {
 	namespace nsNeuronal {
+        class CAxon;
+        class CDendrite;
 		class CNeuron : public CObject
 		{
 		public:
@@ -35,30 +35,5 @@ namespace nsAI {
             std::unique_ptr<DendriAccessor_t> getDendriAccessor();
 		};
 
-		class CTagIndex : public CObject
-		{
-		public:
-			typedef std::vector< size_t > TagVec_t;
-			typedef std::shared_ptr<TagVec_t> TagVec_sptr;
-			~CTagIndex() final = default;
-			bool Insert(TagVec_sptr);
-		private:
-			struct TagVecSptrLess {
-				bool operator()(TagVec_sptr lhs, TagVec_sptr rhs) const;
-			};
-			std::set< TagVec_sptr, TagVecSptrLess > m_data;
-		};
-
-		class CNeuronPool : public CObject
-		{
-		public:
-			~CNeuronPool() final = default;
-			std::shared_ptr<CNeuron> buildNeuron(size_t tag);
-		private:
-			std::set< std::shared_ptr<CNeuron>, CNeuron::SPtrLess > m_data;
-        public:
-            typedef IAccessor< decltype(m_data) > DataAccessor_t;
-            std::unique_ptr< DataAccessor_t > getAccessor();
-		};
 	}
 }

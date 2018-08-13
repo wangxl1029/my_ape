@@ -9,9 +9,6 @@
 #ifndef ape_input_hpp
 #define ape_input_hpp
 
-#include "BusClient.hpp"
-#include "ape.hpp"
-
 class nsAI::CApe::CInput : public nsAI::nsNeuronal::CBusClient
 {
 public:

@@ -6,12 +6,17 @@
 //  Copyright © 2018 alan king. All rights reserved.
 //
 
-#ifndef neur_priv_hpp
-#define neur_priv_hpp
-
-#include "ai_comm.hpp"
+#ifndef neur_layer_hpp
+#define neur_layer_hpp
 
 namespace nsAI {
+    namespace nsNeuronal
+    {
+        class CLayer : public CNoCopyable
+        {
+        public:
+        };
+    }
 }
 
 #endif /* neur_priv_hpp */

@@ -1,9 +1,11 @@
 #pragma once
-#include <memory>
-#include <vector>
-#include "ai_comm.hpp"
-#include "IAccessor.hpp"
-#include "NeuronDef.hpp"
+//#include <set>
+//#include <tuple>
+//#include <memory>
+//#include <vector>
+//#include "ai_comm.hpp"
+//#include "IAccessor.hpp"
+//#include "NeuronDef.hpp"
 
 namespace nsAI {
 	namespace nsNeuronal {

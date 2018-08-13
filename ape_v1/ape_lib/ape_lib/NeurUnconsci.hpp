@@ -9,9 +9,6 @@
 #ifndef NeurUnconsci_hpp
 #define NeurUnconsci_hpp
 
-#include "EmotionTarget.hpp"
-#include "BusClient.hpp"
-
 namespace nsAI {
     namespace nsNeuronal{
         class CUnconscious: public CEmotionTarget

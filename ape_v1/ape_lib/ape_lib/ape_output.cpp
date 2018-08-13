@@ -8,6 +8,8 @@
 
 #include <cassert>
 #include <iostream>
+#include "BusClient.hpp"
+#include "ape.hpp"
 #include "ape_output.hpp"
 #include "ape_spine.hpp"
 

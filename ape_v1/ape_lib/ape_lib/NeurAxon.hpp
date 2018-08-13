@@ -1,14 +1,15 @@
 #ifndef _neuronal_axon_hpp_
 #define _neuronal_axon_hpp_
 
-#include <memory>
-#include "NeuronDef.hpp"
+//#include <memory>
+//#include "NeuronDef.hpp"
 
 namespace nsAI
 {
 	namespace nsNeuronal
 	{
 		class CDendrite;
+        class CNeuron;
 		class CAxon : public CObject
 		{
 		public:

@@ -1,8 +1,13 @@
 #include <algorithm>
-#include "NeuronDef.hpp"
-#include "NeurEmotion.hpp"
-#include "neur_priv.hpp"
+#include <set>
+#include <vector>
+
+#include "ai_comm.hpp"
 #include "CAccessor.hpp"
+//#include "NeurEmotion.hpp"
+#include "NeurAxon.hpp"
+#include "NeurDendrite.hpp"
+#include "NeuronDef.hpp"
 
 namespace nsAI {
 	namespace nsNeuronal {
@@ -54,36 +59,5 @@ namespace nsAI {
 			return std::make_unique< CAccessor< decltype(m_vecDendrite) > >(m_vecDendrite.begin(), m_vecDendrite.end(), m_vecDendrite.size());
 		}
 
-		bool CTagIndex::TagVecSptrLess::operator()(TagVec_sptr lhs, TagVec_sptr rhs) const
-		{
-			bool isLess = lhs->size() < rhs->size();
-			if (lhs->size() == rhs->size())
-			{
-				size_t i = 0;
-				for (; i < lhs->size() && lhs->at(i) == rhs->at(i); i++)
-					;// do nothing
-				if (i < lhs->size())
-				{
-					isLess = lhs->at(i) < rhs->at(i);
-				}
-			}
-
-			return isLess;
-		}
-		bool CTagIndex::Insert(TagVec_sptr spTagVec)
-		{
-			return m_data.insert(spTagVec).second;
-		}
-
-		std::shared_ptr<CNeuron> CNeuronPool::buildNeuron(size_t tag)
-		{
-			auto ret_pair = m_data.emplace(std::make_shared<CNeuron>(tag));
-			return *ret_pair.first;
-		}
-
-		std::unique_ptr< CNeuronPool::DataAccessor_t > CNeuronPool::getAccessor()
-		{
-			return std::make_unique< CAccessor< decltype(m_data) > >(m_data.begin(), m_data.end(), m_data.size());
-		}
 	}
 }

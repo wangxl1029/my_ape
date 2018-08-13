@@ -7,7 +7,17 @@
 //
 
 #include <iostream>
+
+#include "EmotionTarget.hpp"
+#include "BusClient.hpp"
 #include "NeurUnconsci.hpp"
+
+namespace nsAI {
+    namespace nsNeuronal{
+        
+    }
+}
+
 
 namespace ns_ = nsAI::nsNeuronal;
 

@@ -1,8 +1,3 @@
-#pragma once
-
-#include "ai_comm.hpp"
-#include <memory>
-
 #ifndef ape_lib_
 #define ape_lib_
 

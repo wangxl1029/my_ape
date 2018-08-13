@@ -9,9 +9,6 @@
 #ifndef ape_mind_hpp
 #define ape_mind_hpp
 
-#include "BusClient.hpp"
-#include "EmotionTarget.hpp"
-
 namespace nsAI {
     namespace nsNeuronal{
         class CThink

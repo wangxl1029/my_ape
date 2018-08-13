@@ -8,24 +8,16 @@
 
 #ifndef ape_brain_hpp
 #define ape_brain_hpp
-
-#include "ape.hpp"
-#include "NeurCortex.hpp"
-#include "IBusServer.hpp"
-
 class nsAI::CApe::CBrain: public nsAI::CNoCopyable
 {
 public:
     CBrain() = delete;
     CBrain(std::shared_ptr<CSpine>);
     ~CBrain() final = default;
-    void Kill()
-    {
-        m_cortex.Kill();
-    }
+    void Kill();
     
 private:
-    nsNeuronal::CCortex m_cortex;
+    std::unique_ptr<nsNeuronal::CBusClient> m_cortex;
 };
 
 #endif /* ape_brain_hpp */

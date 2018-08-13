@@ -7,6 +7,14 @@
 //
 
 #include <cassert>
+#include <memory>
+#include <set>
+#include <vector>
+
+#include "EmotionTarget.hpp"
+#include "BusClient.hpp"
+#include "NeurUnconsci.hpp"
+#include "NeurConscious.hpp"
 #include "NeurCortex.hpp"
 
 namespace ns_ = nsAI::nsNeuronal;

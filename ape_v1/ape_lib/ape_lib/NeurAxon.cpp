@@ -1,6 +1,12 @@
 #include <cassert>
+#include <memory>
+#include <vector>
+
+#include "ai_comm.hpp"
+#include "CAccessor.hpp"
 #include "NeurAxon.hpp"
 #include "NeurDendrite.hpp"
+#include "NeuronDef.hpp"
 
 namespace nsAI
 {

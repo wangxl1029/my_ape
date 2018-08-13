@@ -6,4 +6,7 @@
 //  Copyright © 2018 alan king. All rights reserved.
 //
 
-#include "neur_priv.hpp"
+#include <memory>
+
+#include "ai_comm.hpp"
+#include "NeurLayer.hpp"

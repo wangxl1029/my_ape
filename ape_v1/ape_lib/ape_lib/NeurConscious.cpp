@@ -8,16 +8,83 @@
 #include <cassert>
 #include <fstream>
 #include <algorithm>
+#include <memory>
 #include <set>
 #include <unordered_set>
-#include "NeurConscious.hpp"
+#include <vector>
+
+#include "ai_comm.hpp"
+#include "BusClient.hpp"
+#include "EmotionTarget.hpp"
+#include "CAccessor.hpp"
+#include "NeurAxon.hpp"
+#include "NeurDendrite.hpp"
 #include "NeuronDef.hpp"
+#include "NeurConscious.hpp"
 
 
 namespace nsAI {
 	namespace nsNeuronal {
 
-		class CThink::CPrivate : public CObject
+        class CTagIndex : public CObject
+        {
+        public:
+            typedef std::vector< size_t > TagVec_t;
+            typedef std::shared_ptr<TagVec_t> TagVec_sptr;
+            ~CTagIndex() final = default;
+            bool Insert(TagVec_sptr);
+        private:
+            struct TagVecSptrLess {
+                bool operator()(TagVec_sptr lhs, TagVec_sptr rhs) const;
+            };
+            std::set< TagVec_sptr, TagVecSptrLess > m_data;
+        };
+        
+        class CNeuronPool : public CObject
+        {
+        public:
+            ~CNeuronPool() final = default;
+            std::shared_ptr<CNeuron> buildNeuron(size_t tag);
+        private:
+            std::set< std::shared_ptr<CNeuron>, CNeuron::SPtrLess > m_data;
+        public:
+            typedef IAccessor< decltype(m_data) > DataAccessor_t;
+            std::unique_ptr< DataAccessor_t > getAccessor();
+        };
+
+        bool CTagIndex::TagVecSptrLess::operator()(TagVec_sptr lhs, TagVec_sptr rhs) const
+        {
+            bool isLess = lhs->size() < rhs->size();
+            if (lhs->size() == rhs->size())
+            {
+                size_t i = 0;
+                for (; i < lhs->size() && lhs->at(i) == rhs->at(i); i++)
+                    ;// do nothing
+                if (i < lhs->size())
+                {
+                    isLess = lhs->at(i) < rhs->at(i);
+                }
+            }
+            
+            return isLess;
+        }
+        bool CTagIndex::Insert(TagVec_sptr spTagVec)
+        {
+            return m_data.insert(spTagVec).second;
+        }
+        
+        std::shared_ptr<CNeuron> CNeuronPool::buildNeuron(size_t tag)
+        {
+            auto ret_pair = m_data.emplace(std::make_shared<CNeuron>(tag));
+            return *ret_pair.first;
+        }
+        
+        std::unique_ptr< CNeuronPool::DataAccessor_t > CNeuronPool::getAccessor()
+        {
+            return std::make_unique< CAccessor< decltype(m_data) > >(m_data.begin(), m_data.end(), m_data.size());
+        }
+
+        class CThink::CPrivate : public CObject
 		{
 		public:
 			CPrivate();

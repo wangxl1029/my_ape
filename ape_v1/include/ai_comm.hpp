@@ -27,13 +27,15 @@ namespace nsAI
 {
     class CObject {
     public:
+        CObject() = default;
         virtual ~CObject() = default;
     };
     
-    class CNoCopyable : public CObject
+    class CNoCopyable
     {
     public:
         CNoCopyable() = default;
+        virtual ~CNoCopyable() = default;
         CNoCopyable(const CNoCopyable&) = delete;
         CNoCopyable& operator=(const CNoCopyable&) = delete;
     };

@@ -9,9 +9,6 @@
 #ifndef ape_output_hpp
 #define ape_output_hpp
 
-#include "ape.hpp"
-#include "BusClient.hpp"
-
 class nsAI::CApe::COutput: public nsAI::nsNeuronal::CBusClient
 {
 public:

@@ -7,7 +7,12 @@
 //
 
 #include <iostream>
-#include "ai_priv.hpp"
+#include <memory>
+
+
+#include "ai_comm.hpp"
+#include "BusClient.hpp"
+#include "ape.hpp"
 #include "ape_spine.hpp"
 #include "ape_brain.hpp"
 #include "ape_input.hpp"

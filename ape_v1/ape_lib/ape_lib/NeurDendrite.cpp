@@ -1,8 +1,13 @@
 #include <cassert>
+#include <memory>
+#include <vector>
+
+#include "ai_comm.hpp"
+#include "CAccessor.hpp"
 #include "NeurAxon.hpp"
 #include "NeurDendrite.hpp"
 #include "NeuronDef.hpp"
-#include "CAccessor.hpp"
+
 namespace nsAI {
 	namespace nsNeuronal {
 		CDendrite::CDendrite(std::shared_ptr<CNeuron> spOwner)
