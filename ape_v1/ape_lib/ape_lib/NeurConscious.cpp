@@ -22,16 +22,18 @@
 #include "NeuronDef.hpp"
 #include "NeurConscious.hpp"
 
+#include "NeurLayer.hpp"
+
 
 namespace nsAI {
 	namespace nsNeuronal {
 
-        class CTagIndex : public CObject
+        class CTagIndices : public CObject
         {
         public:
             typedef std::vector< size_t > TagVec_t;
             typedef std::shared_ptr<TagVec_t> TagVec_sptr;
-            ~CTagIndex() final = default;
+            ~CTagIndices() final = default;
             bool Insert(TagVec_sptr);
         private:
             struct TagVecSptrLess {
@@ -52,7 +54,7 @@ namespace nsAI {
             std::unique_ptr< DataAccessor_t > getAccessor();
         };
 
-        bool CTagIndex::TagVecSptrLess::operator()(TagVec_sptr lhs, TagVec_sptr rhs) const
+        bool CTagIndices::TagVecSptrLess::operator()(TagVec_sptr lhs, TagVec_sptr rhs) const
         {
             bool isLess = lhs->size() < rhs->size();
             if (lhs->size() == rhs->size())
@@ -68,7 +70,7 @@ namespace nsAI {
             
             return isLess;
         }
-        bool CTagIndex::Insert(TagVec_sptr spTagVec)
+        bool CTagIndices::Insert(TagVec_sptr spTagVec)
         {
             return m_data.insert(spTagVec).second;
         }
@@ -90,6 +92,7 @@ namespace nsAI {
 			CPrivate();
 			~CPrivate() final;
 			void tense(std::unique_ptr<CEmotion>);
+            void Motivate(std::unique_ptr<CEmotion>);
 			std::ofstream& log()
 			{
 				m_log << "[think]";
@@ -101,16 +104,19 @@ namespace nsAI {
 
 			std::set<size_t> m_tagUndupped;
 			std::vector<size_t> m_tagSeq;
+            CTagIndex m_tagIdx;
 			std::vector< std::shared_ptr< CNeuron > > m_vecUndupNeuron;
 			void buildAssoiatedNeuron(std::shared_ptr<decltype(m_tagSeq)>, std::shared_ptr<decltype(m_vecUndupNeuron)>);
+            void buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUndupNeuron)>);
 		private:
-			std::shared_ptr<CTagIndex> m_tagIndex;
+			std::shared_ptr<CTagIndices> m_tagIndex;
+            std::shared_ptr<CTagIndexChecker> m_spChecker;
 			std::shared_ptr<CNeuronPool> m_spNeurPool;
 			std::ofstream m_log;
 		};
 
 		CThink::CPrivate::CPrivate()
-			: m_tagIndex(std::make_shared<CTagIndex>())
+			: m_tagIndex(std::make_shared<CTagIndices>())
 			, m_spNeurPool(std::make_shared<CNeuronPool>())
 		{
 #ifdef _WIN32
@@ -181,7 +187,21 @@ namespace nsAI {
 			});
 		}
 
-		void CThink::CPrivate::tense(std::unique_ptr<CEmotion> e)
+        void CThink::CPrivate::buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUndupNeuron)> spUndupNeur)
+        {
+            assert(spUndupNeur->size() > 1);
+            
+            auto newNeur = m_spNeurPool->buildNeuron(CEmotion::getUniqueTag());
+            auto spDendrite = newNeur->buildDendrite(newNeur);
+            std::for_each(spUndupNeur->begin(), spUndupNeur->end(),
+                          [spDendrite](std::shared_ptr<CNeuron> spN) {
+                              auto spAxon = spN->buildAxon(spN);
+                              spDendrite->attach(spAxon);
+                              spAxon->attach(spDendrite);
+                          });
+        }
+
+        void CThink::CPrivate::tense(std::unique_ptr<CEmotion> e)
 		{
 			log() << "tense " << CEmotion::echo(e->m_tag) << std::endl;
 
@@ -194,7 +214,7 @@ namespace nsAI {
 			{   // something dupped and clean the undupped tags
 				m_tagUndupped.clear();
 
-				auto spIdx = std::make_shared<CTagIndex::TagVec_t>();
+				auto spIdx = std::make_shared<CTagIndices::TagVec_t>();
 				spIdx->swap(m_tagSeq); // clean the tag sequence
 
 				auto spUndupNeur = std::make_shared<decltype(m_vecUndupNeuron)>();
@@ -211,7 +231,38 @@ namespace nsAI {
 			m_tagSeq.push_back(e->m_tag);
 			m_vecUndupNeuron.push_back(curNeur);
 		}
+        
+        void CThink::CPrivate::Motivate(std::unique_ptr<CEmotion> e)
+        {
+            log() << "emotion tag " << CEmotion::echo(e->m_tag) << std::endl;
+            
+            auto curNeur = m_spNeurPool->buildNeuron(e->m_tag);
+            curNeur->strengthen();
 
+            bool ok;
+            std::tie(std::ignore, ok) = m_tagUndupped.insert(e->m_tag);
+            if (!ok)
+            {   // something dupped and clean the undupped tags
+                m_tagUndupped.clear();
+                
+                auto spIdx = std::make_shared<CTagIndex>();
+                spIdx->Swap(m_tagIdx); // clean the tag sequence
+                
+                auto spUndupNeur = std::make_shared<decltype(m_vecUndupNeuron)>();
+                spUndupNeur->swap(m_vecUndupNeuron);
+                
+                if (spIdx->Size() > 1 && m_spChecker->Insert(spIdx)) {
+                    // check build association
+                    buildAssoiatedNeuron(spUndupNeur);
+                }
+                
+                m_tagUndupped.insert(e->m_tag);
+            }
+            
+            m_tagSeq.push_back(e->m_tag);
+            m_vecUndupNeuron.push_back(curNeur);
+        }
+        
 		CConscious &CConscious::operator=(std::thread&& t)
 		{
 			m_thread = std::move(t);
@@ -245,7 +296,7 @@ void nsAI::nsNeuronal::CThink::operator()()
 		auto e = m_pConscious->getEmotion();
 		if (e)
 		{
-			mp->tense(std::move(e));
+			mp->Motivate(std::move(e));
 		}
 		else
 		{
