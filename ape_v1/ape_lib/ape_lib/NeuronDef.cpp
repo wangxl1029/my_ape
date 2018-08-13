@@ -34,21 +34,6 @@ namespace nsAI {
 			return m_vecAxon.back();
 		}
 
-		bool CNeuron::less(const CNeuron &lhs, const CNeuron &rhs)
-		{
-			return lhs.m_tag < rhs.m_tag;
-		}
-
-		bool CNeuron::less(const std::shared_ptr<CNeuron> lhs, const std::shared_ptr<CNeuron> rhs)
-		{
-			return less(*lhs, *rhs);
-		}
-
-		bool CNeuron::SPtrLess::operator()(std::shared_ptr<CNeuron> lhs, std::shared_ptr<CNeuron> rhs) const
-		{
-			return less(lhs, rhs);
-		}
-
 		std::unique_ptr< CNeuron::AxonAccessor_t > CNeuron::getAxonAccessor()
 		{
 			return std::make_unique< CAccessor< decltype(m_vecAxon) > >(m_vecAxon.begin(), m_vecAxon.end(), m_vecAxon.size());

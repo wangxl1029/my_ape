@@ -16,11 +16,7 @@ namespace nsAI {
 			std::shared_ptr< CDendrite > buildDendrite(std::shared_ptr<CNeuron> spOwner);
 			std::shared_ptr< CAxon > buildAxon(std::shared_ptr<CNeuron> spOwner);
             // prediction
-			struct SPtrLess {
-				bool operator()(std::shared_ptr<CNeuron>, std::shared_ptr<CNeuron>) const;
-			};
-			static bool less(const CNeuron&, const CNeuron&);
-			static bool less(std::shared_ptr<CNeuron>, std::shared_ptr<CNeuron>);
+            bool operator<(const CNeuron& other) const {return this->m_tag < other.m_tag;}
             // attributes
 			const size_t m_tag;
 		private:

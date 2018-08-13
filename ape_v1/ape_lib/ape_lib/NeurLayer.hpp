@@ -25,6 +25,7 @@ namespace nsAI {
         public:
             ~CTagIndex() final = default;
             bool operator<(const CTagIndex&) const;
+            void Add(size_t);
             void Swap(CTagIndex&);
             size_t Size() const;
         private:
@@ -40,11 +41,24 @@ namespace nsAI {
             std::set<std::shared_ptr<CTagIndex>, CSptrLess<CTagIndex> > m_indices;
         };
         
+        class CNeuronPool : public CObject
+        {
+        public:
+            ~CNeuronPool() final = default;
+            std::shared_ptr<CNeuron> buildNeuron(size_t tag);
+        private:
+            std::set< std::shared_ptr<CNeuron>, CSptrLess<CNeuron> > m_data;
+        public:
+            typedef IAccessor< decltype(m_data) > DataAccessor_t;
+            std::unique_ptr< DataAccessor_t > getAccessor();
+        };
+        
         class CLayer : public CNoCopyable
         {
         public:
             ~CLayer() final = default;
         };
+        
     }
 }
 

@@ -11,6 +11,8 @@
 #include <vector>
 
 #include "ai_comm.hpp"
+#include "CAccessor.hpp"
+#include "NeuronDef.hpp"
 #include "NeurLayer.hpp"
 
 namespace nsAI {
@@ -38,6 +40,11 @@ namespace nsAI {
             return m_tagSeq.size();
         }
         
+        void CTagIndex::Add(size_t tagval)
+        {
+            m_tagSeq.push_back(tagval);
+        }
+        
         void CTagIndex::Swap(nsAI::nsNeuronal::CTagIndex & other)
         {
             m_tagSeq.swap(other.m_tagSeq);
@@ -47,5 +54,17 @@ namespace nsAI {
         {
             return m_indices.insert(spIdx).second;
         }
+        
+        std::shared_ptr<CNeuron> CNeuronPool::buildNeuron(size_t tag)
+        {
+            auto ret_pair = m_data.emplace(std::make_shared<CNeuron>(tag));
+            return *ret_pair.first;
+        }
+        
+        std::unique_ptr< CNeuronPool::DataAccessor_t > CNeuronPool::getAccessor()
+        {
+            return std::make_unique< CAccessor< decltype(m_data) > >(m_data.begin(), m_data.end(), m_data.size());
+        }
+        
     }
 }
