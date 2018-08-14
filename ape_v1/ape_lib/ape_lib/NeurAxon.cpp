@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "ai_comm.hpp"
-#include "CAccessor.hpp"
+#include "ai_access_imp.hpp"
 #include "NeurAxon.hpp"
 #include "NeurDendrite.hpp"
 #include "NeuronDef.hpp"

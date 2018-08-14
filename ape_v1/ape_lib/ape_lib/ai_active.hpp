@@ -64,7 +64,7 @@ namespace nsAI
         std::condition_variable m_cv;
         std::queue< std::unique_ptr<_T> > m_q;
     };
-
+    
     template<class _MsgT>
     class CActiveTarget : public CNoCopyable
     {
@@ -98,6 +98,12 @@ namespace nsAI
         CQueue_TS<_MsgT> m_mq;
     };
     
+    class ILifeCycle : public CObject
+    {
+    public:
+        virtual bool isAlive() = 0;
+        ~ILifeCycle() override = default;
+    };
 }; ///< nsAi
 
 #ifdef __APPLE__

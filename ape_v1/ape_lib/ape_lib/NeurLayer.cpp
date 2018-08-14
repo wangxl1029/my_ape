@@ -6,72 +6,64 @@
 //  Copyright © 2018 alan king. All rights reserved.
 //
 #include <algorithm>
+#include <atomic>
 #include <cassert>
 #include <memory>
 #include <set>
 #include <vector>
 
 #include "ai_comm.hpp"
-#include "CAccessor.hpp"
+#include "ai_active.hpp"
+#include "ai_predicate.hpp"
+#include "ai_access_imp.hpp"
+#include "NeurEmotion.hpp"
+#include "EmotionTarget.hpp"
 #include "NeuronDef.hpp"
+#include "NeuronalPool.hpp"
 #include "NeurLayer.hpp"
 
 namespace nsAI {
-    namespace nsContPred{
-        template<class _T>
-        inline bool isSizeLess(const _T &lhs, const _T &rhs) {return lhs.size() < rhs.size();}
-
-        template<class _T>
-        inline bool isSizeEqual(const _T &lhs, const _T &rhs) {return lhs.size() == rhs.size();}
-        
-        template<class _T>
-        inline bool isLessAsSizequal(const _T &lhs, const _T &rhs){
-            auto res_pair = std::mismatch(lhs.begin(), lhs.end(), rhs.begin());
-            return  lhs.end() == res_pair.first ? false : (*res_pair.first) < (*res_pair.second);
-        }
-        
-        template<class _T>
-        inline bool isLess(const _T &lhs, const _T &rhs){
-            return isSizeEqual(lhs, rhs) ? isLessAsSizequal(lhs, rhs) : isSizeLess(lhs, rhs);
-        }
-    }
-    
     namespace nsNeuronal{
-        bool CTagIndex::operator<(const CTagIndex& rhs) const
+        CLayerLifeCycle::CLayerLifeCycle()
         {
-            return nsContPred::isLess(this->m_tagSeq, rhs.m_tagSeq);
+            Reset(true);
         }
         
-        size_t CTagIndex::Size() const
+        void CLayerLifeCycle::Reset(bool val = false)
         {
-            return m_tagSeq.size();
+            m_alive.store(val);
         }
         
-        void CTagIndex::Add(size_t tagval)
+        bool CLayerLifeCycle::isAlive()
         {
-            m_tagSeq.push_back(tagval);
+            return m_alive.load();
         }
         
-        void CTagIndex::Swap(nsAI::nsNeuronal::CTagIndex & other)
+        CLayerWork::CLayerWork(ILifeCycle& lc) : m_lc(lc)
         {
-            m_tagSeq.swap(other.m_tagSeq);
+            
         }
         
-        bool CTagIndexChecker::Insert(std::shared_ptr<CTagIndex> spIdx)
+        void CLayerWork::operator()()
         {
-            return m_indices.insert(spIdx).second;
+            while (m_lc.isAlive()) {
+                ;
+            }
         }
         
-        std::shared_ptr<CNeuron> CNeuronPool::buildNeuron(size_t tag)
+        class CLayer::CPrivate : public CObject
         {
-            auto ret_pair = m_data.emplace(std::make_shared<CNeuron>(tag));
-            return *ret_pair.first;
+        public:
+        };
+        
+        CLayer::CLayer() : mp(std::make_shared<CPrivate>())
+        {
+            
         }
         
-        std::unique_ptr< CNeuronPool::DataAccessor_t > CNeuronPool::getAccessor()
+        void CLayerPool::Send(std::unique_ptr<CEmotion> e)
         {
-            return std::make_unique< CAccessor< decltype(m_data) > >(m_data.begin(), m_data.end(), m_data.size());
+            
         }
-        
     }
 }

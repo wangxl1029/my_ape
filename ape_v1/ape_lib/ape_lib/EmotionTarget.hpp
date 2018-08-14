@@ -9,7 +9,7 @@
 #ifndef EmotionTarget_hpp
 #define EmotionTarget_hpp
 
-#include "ai_priv.hpp"
+#include "ai_active.hpp"
 #include "NeurEmotion.hpp"
 
 namespace nsAI {

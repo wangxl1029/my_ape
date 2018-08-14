@@ -10,55 +10,46 @@
 #define neur_layer_hpp
 
 namespace nsAI {
-    template<class _T>
-    struct CSptrLess{
-        bool operator()(std::shared_ptr<_T> lhs, std::shared_ptr<_T> rhs)
-        {
-            return (*lhs) < (*rhs);
-        }
-    };
     
     namespace nsNeuronal
     {
-        class CTagIndex : public CNoCopyable
+        class CLayerLifeCycle : public ILifeCycle
         {
         public:
-            ~CTagIndex() final = default;
-            bool operator<(const CTagIndex&) const;
-            void Add(size_t);
-            void Swap(CTagIndex&);
-            size_t Size() const;
+            CLayerLifeCycle();
+            bool isAlive() final;
+            void Reset(bool);
         private:
-            std::vector< size_t > m_tagSeq;
+            std::atomic_bool m_alive;
         };
         
-        class CTagIndexChecker : public CNoCopyable
+        class CLayerWork
         {
         public:
-            ~CTagIndexChecker() final = default;
-            bool Insert(std::shared_ptr<CTagIndex>);
+            CLayerWork(ILifeCycle&);
+            void operator()();
         private:
-            std::set<std::shared_ptr<CTagIndex>, CSptrLess<CTagIndex> > m_indices;
+            ILifeCycle& m_lc;
         };
         
-        class CNeuronPool : public CObject
+        class CLayer : public CEmotionTarget
         {
+            class CPrivate;
         public:
-            ~CNeuronPool() final = default;
-            std::shared_ptr<CNeuron> buildNeuron(size_t tag);
+            CLayer();
+            ~CLayer() override = default;
         private:
-            std::set< std::shared_ptr<CNeuron>, CSptrLess<CNeuron> > m_data;
-        public:
-            typedef IAccessor< decltype(m_data) > DataAccessor_t;
-            std::unique_ptr< DataAccessor_t > getAccessor();
+            std::shared_ptr<CPrivate> mp;
         };
         
-        class CLayer : public CNoCopyable
+        class CLayerPool : public CObject
         {
         public:
-            ~CLayer() final = default;
+            void Send(std::unique_ptr<CEmotion>);
+        private:
+            std::vector<CLayer> m_layers;
+            CLayerLifeCycle m_lifeCycle;
         };
-        
     }
 }
 

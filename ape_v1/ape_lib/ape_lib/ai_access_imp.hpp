@@ -8,7 +8,7 @@
 
 #ifndef CACCESSOR_H
 #define CACCESSOR_H
-#include "IAccessor.hpp"
+#include "ai_access.hpp"
 
 namespace nsAI {
     template<class _T>

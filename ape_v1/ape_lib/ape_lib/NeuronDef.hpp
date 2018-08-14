@@ -1,7 +1,7 @@
 #pragma once
 //#include "NeurDendrite.hpp"
 //#include "NeurAxon.hpp"
-//#include "IAccessor.hpp"
+//#include "ai_access.hpp"
 namespace nsAI {
 	namespace nsNeuronal {
         class CAxon;

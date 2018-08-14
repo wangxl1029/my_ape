@@ -4,7 +4,7 @@
 //#include <memory>
 //#include <vector>
 //#include "ai_comm.hpp"
-//#include "IAccessor.hpp"
+//#include "ai_access.hpp"
 //#include "NeuronDef.hpp"
 
 namespace nsAI {

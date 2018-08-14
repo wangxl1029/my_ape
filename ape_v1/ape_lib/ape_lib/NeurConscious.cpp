@@ -16,12 +16,14 @@
 #include "ai_comm.hpp"
 #include "BusClient.hpp"
 #include "EmotionTarget.hpp"
-#include "CAccessor.hpp"
+#include "ai_access_imp.hpp"
 #include "NeurAxon.hpp"
 #include "NeurDendrite.hpp"
 #include "NeuronDef.hpp"
 #include "NeurConscious.hpp"
 
+#include "ai_predicate.hpp"
+#include "NeuronalPool.hpp"
 #include "NeurLayer.hpp"
 
 
@@ -116,12 +118,11 @@ namespace nsAI {
             
             auto newNeur = m_spNeurPool->buildNeuron(CEmotion::getUniqueTag());
             auto spDendrite = newNeur->buildDendrite(newNeur);
-            std::for_each(spUndupNeur->begin(), spUndupNeur->end(),
-                          [spDendrite](std::shared_ptr<CNeuron> spN) {
-                              auto spAxon = spN->buildAxon(spN);
-                              spDendrite->attach(spAxon);
-                              spAxon->attach(spDendrite);
-                          });
+            std::for_each(spUndupNeur->begin(), spUndupNeur->end(),[spDendrite](std::shared_ptr<CNeuron> spN) {
+                auto spAxon = spN->buildAxon(spN);
+                spDendrite->attach(spAxon);
+                spAxon->attach(spDendrite);
+            });
         }
 
          void CThink::CPrivate::Motivate(std::unique_ptr<CEmotion> e)

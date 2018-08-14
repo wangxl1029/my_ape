@@ -9,7 +9,7 @@
 #ifndef BusClient_hpp
 #define BusClient_hpp
 
-#include "ai_priv.hpp"
+#include "ai_active.hpp"
 #include "BusProxy.hpp"
 namespace nsAI{
     namespace nsNeuronal{

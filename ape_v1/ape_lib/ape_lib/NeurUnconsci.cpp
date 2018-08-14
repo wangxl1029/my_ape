@@ -11,6 +11,8 @@
 #include "EmotionTarget.hpp"
 #include "BusClient.hpp"
 #include "NeurUnconsci.hpp"
+#include "NeurLayer.hpp"
+
 
 namespace nsAI {
     namespace nsNeuronal{
@@ -23,6 +25,7 @@ namespace ns_ = nsAI::nsNeuronal;
 
 void ns_::CReflect::operator()()
 {
+    auto spNL = std::shared_ptr<CLayer>();
 	while (m_pCortex->isAlive())
 	{
 		auto e = m_pUnconsci->getEmotion();
@@ -58,4 +61,6 @@ void ns_::CReflect::operator()()
 			m_pMind->Send(std::move(e));
 		}
 	}
+    
+    spNL->Kill();
 }
