@@ -22,48 +22,50 @@
 #include "NeuronalPool.hpp"
 #include "NeurLayer.hpp"
 
-namespace nsAI {
-    namespace nsNeuronal{
-        CLayerLifeCycle::CLayerLifeCycle()
-        {
-            Reset(true);
-        }
-        
-        void CLayerLifeCycle::Reset(bool val = false)
-        {
-            m_alive.store(val);
-        }
-        
-        bool CLayerLifeCycle::isAlive()
-        {
-            return m_alive.load();
-        }
-        
-        CLayerWork::CLayerWork(ILifeCycle& lc) : m_lc(lc)
-        {
-            
-        }
-        
-        void CLayerWork::operator()()
-        {
-            while (m_lc.isAlive()) {
-                ;
-            }
-        }
-        
-        class CLayer::CPrivate : public CObject
-        {
-        public:
-        };
-        
-        CLayer::CLayer() : mp(std::make_shared<CPrivate>())
-        {
-            
-        }
-        
-        void CLayerPool::Send(std::unique_ptr<CEmotion> e)
-        {
-            
-        }
+using namespace nsAI::nsNeuronal;
+
+CLayerLifeCycle::CLayerLifeCycle()
+{
+    Reset(true);
+}
+
+void CLayerLifeCycle::Reset(bool val = false)
+{
+    m_alive.store(val);
+}
+
+bool CLayerLifeCycle::isAlive()
+{
+    return m_alive.load();
+}
+
+CLayerWork::CLayerWork(ILifeCycle& lc) : m_lc(lc)
+{
+    
+}
+
+void CLayerWork::operator()()
+{
+    while (m_lc.isAlive()) {
+        ;
     }
+}
+
+class CLayer::CPrivate : public CObject
+{
+public:
+};
+
+CLayer::CLayer() : mp(std::make_shared<CPrivate>())
+{
+    
+}
+
+
+void CLayerProxy::Send(std::unique_ptr<CEmotion> e) {
+    if ( ! m_spLayer) {
+        m_spLayer = std::make_shared<CLayer>();
+    };
+    
+    return m_spLayer->Send(std::move(e));
 }

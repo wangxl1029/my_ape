@@ -11,8 +11,8 @@
 #include "EmotionTarget.hpp"
 #include "BusClient.hpp"
 #include "NeurUnconsci.hpp"
-#include "NeurLayer.hpp"
 
+#include "NeuronalLayerPool.hpp"
 
 namespace nsAI {
     namespace nsNeuronal{
@@ -25,7 +25,7 @@ namespace ns_ = nsAI::nsNeuronal;
 
 void ns_::CReflect::operator()()
 {
-    auto spNL = std::shared_ptr<CLayer>();
+    CLayerPool layerPool;
 	while (m_pCortex->isAlive())
 	{
 		auto e = m_pUnconsci->getEmotion();
@@ -58,9 +58,10 @@ void ns_::CReflect::operator()()
 			std::cout << "sensor: " << CEmotion::echo(e->m_tag) << std::endl;
 			e = triggerReflexUnconsciously(std::move(e));
 
-			m_pMind->Send(std::move(e));
+			//m_pMind->Send(std::move(e));
+            layerPool.Send(std::move(e));
 		}
 	}
     
-    spNL->Kill();
+    
 }

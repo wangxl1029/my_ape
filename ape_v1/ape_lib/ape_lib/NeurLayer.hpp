@@ -10,7 +10,6 @@
 #define neur_layer_hpp
 
 namespace nsAI {
-    
     namespace nsNeuronal
     {
         class CLayerLifeCycle : public ILifeCycle
@@ -42,13 +41,14 @@ namespace nsAI {
             std::shared_ptr<CPrivate> mp;
         };
         
-        class CLayerPool : public CObject
+        class CLayerProxy : public CObject
         {
         public:
+            CLayerProxy() = default;
+            ~CLayerProxy() final = default;
             void Send(std::unique_ptr<CEmotion>);
         private:
-            std::vector<CLayer> m_layers;
-            CLayerLifeCycle m_lifeCycle;
+            std::shared_ptr<CLayer> m_spLayer;
         };
     }
 }
