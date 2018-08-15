@@ -9,6 +9,7 @@
 #include <atomic>
 #include <cassert>
 #include <memory>
+#include <mutex>
 #include <set>
 #include <vector>
 
@@ -61,11 +62,17 @@ CLayer::CLayer() : mp(std::make_shared<CPrivate>())
     
 }
 
+CLayerProxy::CLayerProxy(CLayerProxy&& other)
+{
+    m_spLayer = std::move(other.m_spLayer);
+    //m_mutex = std::move(other.m_mutex);
+}
 
-void CLayerProxy::Send(std::unique_ptr<CEmotion> e) {
+void CLayerProxy::Send_TS(std::unique_ptr<CEmotion> e) {
+    std::unique_lock<std::mutex> lk;
     if ( ! m_spLayer) {
         m_spLayer = std::make_shared<CLayer>();
-    };
+    }lk.unlock();
     
     return m_spLayer->Send(std::move(e));
 }

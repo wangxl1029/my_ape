@@ -45,9 +45,11 @@ namespace nsAI {
         {
         public:
             CLayerProxy() = default;
+            CLayerProxy(CLayerProxy&&);
             ~CLayerProxy() final = default;
-            void Send(std::unique_ptr<CEmotion>);
+            void Send_TS(std::unique_ptr<CEmotion>);
         private:
+            std::mutex m_mutex;
             std::shared_ptr<CLayer> m_spLayer;
         };
     }

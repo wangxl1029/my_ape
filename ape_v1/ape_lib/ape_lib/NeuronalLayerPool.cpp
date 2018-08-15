@@ -25,38 +25,35 @@
 #include "NeurLayer.hpp"
 #include "NeuronalLayerPool.hpp"
 
-namespace nsAI {
-    namespace nsNeuronal
-    {
-        class CLayerPool::CPrivate
-        {
-        public:
-            void getNewTarget();
-            CLayerProxy& getHeader_TS();
-            
-            std::vector<CLayerProxy> m_vecProxy;
-            CLayerLifeCycle m_lifeCycle;
-            std::mutex m_mtxProxy;
-        };
-        
-        CLayerPool::CLayerPool() : mp(std::make_shared<CPrivate>())
-        {
-            
-        }
-        
-        CLayerProxy& CLayerPool::CPrivate::getHeader_TS()
-        {
-            std::unique_lock<std::mutex> lk(m_mtxProxy);
-            if (m_vecProxy.empty()) {
-                m_vecProxy.emplace_back(CLayerProxy());
-            }lk.unlock();
-            
-            return m_vecProxy.front();
-        }
-        
-        void CLayerPool::Send(std::unique_ptr<CEmotion> e)
-        {
-            return mp->getHeader_TS().Send(std::move(e));
-        }
-    }
+using namespace nsAI::nsNeuronal;
+
+class CLayerPool::CPrivate
+{
+public:
+    void getNewTarget();
+    CLayerProxy& getHeader_TS();
+    
+    std::vector<CLayerProxy> m_vecProxy;
+    CLayerLifeCycle m_lifeCycle;
+    std::mutex m_mtxProxy;
+};
+
+CLayerPool::CLayerPool() : mp(std::make_shared<CPrivate>())
+{
+    
+}
+
+CLayerProxy& CLayerPool::CPrivate::getHeader_TS()
+{
+    std::unique_lock<std::mutex> lk(m_mtxProxy);
+    if (m_vecProxy.empty()) {
+        m_vecProxy.emplace_back(CLayerProxy());
+    }lk.unlock();
+    
+    return m_vecProxy.front();
+}
+
+void CLayerPool::Send(std::unique_ptr<CEmotion> e)
+{
+    return mp->getHeader_TS().Send_TS(std::move(e));
 }
