@@ -32,15 +32,25 @@ namespace nsAI {
             std::shared_ptr<CPrivate> mp;
         };
         
-		class CLayerWork
+        class CLayerWork : public CObject
 		{
 		public:
 			CLayerWork(ILifeCycle&);
 			void operator()();
 		private:
 			ILifeCycle & m_lc;
-			//std::shared_ptr<CLayerProxy> m_spProxy;
 		};
+        
+        class CLayerGenerator : public CNoCopyable
+        {
+        public:
+            CLayer& getNewLayer(std::thread&&);
+            CLayerWork& getNewWork(ILifeCycle& lc);
+        private:
+            std::mutex m_mutex;
+            std::vector< std::shared_ptr< CLayer > > m_vecLayers;
+            std::vector< std::shared_ptr< CLayerWork > > m_vecWork;
+        };
 	}
 }
 

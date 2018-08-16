@@ -31,13 +31,12 @@ using namespace nsAI::nsNeuronal;
 class CLayerPool::CPrivate
 {
 public:
-	CPrivate() = default;
-	void getNewTarget();
-	CLayer& getHeader_TS();
-
-    std::vector< std::shared_ptr< CLayer > > m_vecLayer;
-    std::vector< std::shared_ptr< CLayerWork > > m_vecWork;
+	CPrivate() {
+        m_pRoot = &m_gen.getNewLayer(std::thread(m_gen.getNewWork(m_lifeCycle)));
+    };
+    CLayerGenerator m_gen;
 	CLayerLifeCycle m_lifeCycle;
+    CLayer* m_pRoot;
 	std::mutex m_mtxProxy;
 };
 
@@ -46,19 +45,7 @@ CLayerPool::CLayerPool() : mp(std::make_shared<CPrivate>())
 
 }
 
-CLayer& CLayerPool::CPrivate::getHeader_TS()
-{
-	std::lock_guard<std::mutex> lk(m_mtxProxy);
-	if (m_vecLayer.empty()) {
-        auto spWork = std::make_shared<CLayerWork>(m_lifeCycle);
-        m_vecWork.push_back(spWork);
-		m_vecLayer.push_back(std::make_shared<CLayer>(std::thread(*spWork)));
-	}
-
-	return *m_vecLayer.front();
-}
-
 void CLayerPool::Send(std::unique_ptr<CEmotion> e)
 {
-	return mp->getHeader_TS().Send(std::move(e));
+	return mp->m_pRoot->Send(std::move(e));
 }
