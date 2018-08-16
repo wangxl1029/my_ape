@@ -26,26 +26,35 @@ namespace nsAI {
         {
             class CPrivate;
         public:
+            CLayer();
             CLayer(std::thread&&);
+            CLayer& operator=(std::thread&&);
             ~CLayer() override = default;
         private:
             std::shared_ptr<CPrivate> mp;
         };
         
+        class CLayerGenerator;
         class CLayerWork : public CObject
 		{
+            class CPrivate;
 		public:
-			CLayerWork(ILifeCycle&);
-			void operator()();
+			CLayerWork(ILifeCycle&, CLayer&);
+			void operator()(CLayerGenerator*);
 		private:
 			ILifeCycle & m_lc;
+            CLayer& m_owner;
+            CLayer* m_pNext;
+            std::shared_ptr<CPrivate> mp;
 		};
         
         class CLayerGenerator : public CNoCopyable
         {
         public:
+            CLayer* getNewLayer();
+            CLayer* getNewLayer(ILifeCycle& lc);
             CLayer& getNewLayer(std::thread&&);
-            CLayerWork& getNewWork(ILifeCycle& lc);
+            CLayerWork* getNewWork(ILifeCycle& lc, CLayer&);
         private:
             std::mutex m_mutex;
             std::vector< std::shared_ptr< CLayer > > m_vecLayers;

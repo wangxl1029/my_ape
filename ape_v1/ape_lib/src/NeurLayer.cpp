@@ -42,15 +42,36 @@ bool CLayerLifeCycle::isAlive()
 	return m_alive.load();
 }
 
-CLayerWork::CLayerWork(ILifeCycle& lc) : m_lc(lc)
+
+class CLayerWork::CPrivate : public CNoCopyable
+{
+public:
+    ~CPrivate() final = default;
+};
+
+CLayerWork::CLayerWork(ILifeCycle& lc, CLayer& owner)
+:m_owner(owner), m_lc(lc) , m_pNext(nullptr)
 {
 
 }
 
-void CLayerWork::operator()()
+void CLayerWork::operator()(CLayerGenerator* pGen)
 {
 	while (m_lc.isAlive()) {
-		;
+        bool isAssociated = false;
+        if (isAssociated) {
+            m_pNext = pGen->getNewLayer(m_lc);
+            //m_pNext->Send( )
+        };
+        auto e = m_owner.PopMessage();
+        if (e)
+        {
+            //mp->Motivate(std::move(e));
+        }
+        else
+        {
+            //mp->log() << "idle" << std::endl;
+        }
 	}
 }
 
@@ -60,9 +81,39 @@ public:
 	CPrivate() = default;
 };
 
+CLayer::CLayer() : CLayer(std::thread())
+{}
+
 CLayer::CLayer(std::thread &&t) : mp(std::make_shared<CPrivate>())
 {
     m_thread = std::move(t);
+}
+
+CLayer& CLayer::operator=(std::thread && t)
+{
+    m_thread = std::move(t);
+    return *this;
+}
+
+CLayer* CLayerGenerator::getNewLayer()
+{
+    std::lock_guard<std::mutex> _(m_mutex);
+    auto spLayer = std::make_shared<CLayer>();
+    m_vecLayers.push_back(spLayer);
+    return spLayer.get();
+}
+
+CLayer* CLayerGenerator::getNewLayer(ILifeCycle& lc)
+{
+    std::lock_guard<std::mutex> _(m_mutex);
+    auto spLayer = std::make_shared<CLayer>();
+    m_vecLayers.push_back(spLayer);
+    
+    auto spWork = std::make_shared<CLayerWork>(lc, *spLayer);
+    m_vecWork.push_back(spWork);
+    *spLayer = std::thread(*spWork, this);
+    
+    return spLayer.get();
 }
 
 CLayer& CLayerGenerator::getNewLayer(std::thread&& t)
@@ -73,9 +124,12 @@ CLayer& CLayerGenerator::getNewLayer(std::thread&& t)
     return *spLayer;
 }
 
-CLayerWork& CLayerGenerator::getNewWork(nsAI::ILifeCycle &lc)
+
+
+CLayerWork* CLayerGenerator::getNewWork(nsAI::ILifeCycle &lc, CLayer &owner)
 {
     std::lock_guard<std::mutex> _(m_mutex);
-    auto spWork = std::make_shared<CLayerWork>(lc);
-    return *spWork;
+    auto spWork = std::make_shared<CLayerWork>(lc, owner);
+    m_vecWork.push_back(spWork);
+    return spWork.get();
 }

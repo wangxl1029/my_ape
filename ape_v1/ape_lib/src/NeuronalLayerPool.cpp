@@ -32,7 +32,7 @@ class CLayerPool::CPrivate
 {
 public:
 	CPrivate() {
-        m_pRoot = &m_gen.getNewLayer(std::thread(m_gen.getNewWork(m_lifeCycle)));
+        m_pRoot = m_gen.getNewLayer(m_lifeCycle);
     };
     CLayerGenerator m_gen;
 	CLayerLifeCycle m_lifeCycle;
