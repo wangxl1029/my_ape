@@ -26,23 +26,12 @@ namespace nsAI {
         {
             class CPrivate;
         public:
-            CLayer();
+            CLayer(std::thread&&);
             ~CLayer() override = default;
         private:
             std::shared_ptr<CPrivate> mp;
         };
         
-        class CLayerProxy : public CObject
-        {
-        public:
-            CLayerProxy();
-            ~CLayerProxy() final = default;
-            void Send_TS(std::unique_ptr<CEmotion>);
-        private:
-            std::shared_ptr<CLayer> m_spProxy;
-			CLayer* m_pLayer;
-        };
-
 		class CLayerWork
 		{
 		public:
@@ -50,7 +39,7 @@ namespace nsAI {
 			void operator()();
 		private:
 			ILifeCycle & m_lc;
-			std::shared_ptr<CLayerProxy> m_spProxy;
+			//std::shared_ptr<CLayerProxy> m_spProxy;
 		};
 	}
 }

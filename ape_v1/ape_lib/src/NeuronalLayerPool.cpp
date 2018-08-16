@@ -33,9 +33,10 @@ class CLayerPool::CPrivate
 public:
 	CPrivate() = default;
 	void getNewTarget();
-	CLayerProxy& getHeader_TS();
+	CLayer& getHeader_TS();
 
-	std::vector< std::shared_ptr<CLayerProxy> > m_vecProxy;
+    std::vector< std::shared_ptr< CLayer > > m_vecLayer;
+    std::vector< std::shared_ptr< CLayerWork > > m_vecWork;
 	CLayerLifeCycle m_lifeCycle;
 	std::mutex m_mtxProxy;
 };
@@ -45,17 +46,19 @@ CLayerPool::CLayerPool() : mp(std::make_shared<CPrivate>())
 
 }
 
-CLayerProxy& CLayerPool::CPrivate::getHeader_TS()
+CLayer& CLayerPool::CPrivate::getHeader_TS()
 {
 	std::lock_guard<std::mutex> lk(m_mtxProxy);
-	if (m_vecProxy.empty()) {
-		m_vecProxy.push_back(std::make_shared<CLayerProxy>());
+	if (m_vecLayer.empty()) {
+        auto spWork = std::make_shared<CLayerWork>(m_lifeCycle);
+        m_vecWork.push_back(spWork);
+		m_vecLayer.push_back(std::make_shared<CLayer>(std::thread(*spWork)));
 	}
 
-	return *m_vecProxy.front();
+	return *m_vecLayer.front();
 }
 
 void CLayerPool::Send(std::unique_ptr<CEmotion> e)
 {
-	return mp->getHeader_TS().Send_TS(std::move(e));
+	return mp->getHeader_TS().Send(std::move(e));
 }

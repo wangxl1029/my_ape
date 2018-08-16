@@ -58,18 +58,12 @@ class CLayer::CPrivate : public CNoCopyable
 {
 public:
 	CPrivate() = default;
+    //CLayerWork m_cfnWork;
 };
 
-CLayer::CLayer() : mp(std::make_shared<CPrivate>())
+CLayer::CLayer(std::thread &&t) : mp(std::make_shared<CPrivate>())
 {
-
+    m_thread = std::move(t);
 }
 
-CLayerProxy::CLayerProxy() : m_spProxy(std::make_shared<CLayer>())
-{
-	m_pLayer = m_spProxy.get();
-}
 
-void CLayerProxy::Send_TS(std::unique_ptr<CEmotion> e) {
-	return m_pLayer->Send(std::move(e)); // the send method of layer is thread-safe.
-}
