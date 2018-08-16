@@ -12,24 +12,15 @@
 namespace nsAI {
     namespace nsNeuronal
     {
-        class CLayerLifeCycle : public ILifeCycle
-        {
-        public:
-            CLayerLifeCycle();
-            bool isAlive() final;
-            void Reset(bool);
-        private:
-            std::atomic_bool m_alive;
-        };
-        
         class CLayer : public CEmotionTarget
         {
             class CPrivate;
         public:
-            CLayer();
-            CLayer(std::thread&&);
+            CLayer(size_t tag);
+            CLayer(std::thread&&, size_t tag);
             CLayer& operator=(std::thread&&);
             ~CLayer() override = default;
+            const size_t m_tag;
         private:
             std::shared_ptr<CPrivate> mp;
         };

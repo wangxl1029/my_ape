@@ -11,6 +11,7 @@
 #include <fstream>
 #include <memory>
 #include <mutex>
+#include <sstream>
 #include <set>
 #include <vector>
 
@@ -31,34 +32,30 @@ using namespace nsAI;
 #endif // _WIN32
 using namespace nsAI::nsNeuronal;
 
-CLayerLifeCycle::CLayerLifeCycle()
-{
-	Reset(true);
-}
-
-void CLayerLifeCycle::Reset(bool val = false)
-{
-	m_alive.store(val);
-}
-
-bool CLayerLifeCycle::isAlive()
-{
-	return m_alive.load();
-}
-
+#ifdef _WIN32
+char log_root[] = R"(C:\Users\win 10\)";
+#elif defined(__APPLE__)
+char log_root[] = "/Users/alanking/Documents/my_AI/my_github/my_ape/ape_v1/ape_lib/";
+#endif // _WIN32
 
 class CLayerWork::CPrivate : public CNoCopyable
 {
 public:
     CPrivate(ILifeCycle& lc, CLayer& owner, CLayerGenerator& gen)
     : m_owner(owner), m_lc(lc) , m_gen(gen), m_pNextLayer(nullptr)
-    {}
+    , m_spChecker(std::make_shared<CTagIndexChecker>())
+    , m_spNeurPool(std::make_shared<CNeuronPool>())
+    {
+        std::ostringstream os;
+        os << log_root << "layer_" << owner.m_tag;
+        m_log.open(os.str());
+    }
     
     ~CPrivate() final = default;
     void Motivate(std::unique_ptr<CEmotion>);
     std::ofstream& log()
     {
-        m_log << "[think]";
+        m_log << "[layer_"<< m_owner.m_tag <<"]";
         return m_log;
     }
     
@@ -74,14 +71,11 @@ public:
     
     void dump();
 private:
-    std::set<size_t> m_tagUndupped;
-    CTagIndex m_tagIdx;
-    std::vector< std::shared_ptr< CNeuron > > m_vecUndupNeuron;
-    void buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUndupNeuron)>);
     // attributes from parents
     ILifeCycle & m_lc;
     CLayer& m_owner;
     CLayerGenerator& m_gen;
+    
     // next layer
     CLayer* m_pNextLayer;
     CLayer& nextlayer(){
@@ -90,15 +84,22 @@ private:
         }
         return *m_pNextLayer;
     }
+    
+    // associated neuron biulding helper
+    std::set<size_t> m_tagUndupped;
+    CTagIndex m_tagIdx;
+    std::vector< std::shared_ptr< CNeuron > > m_vecUndupNeuron;
+    void buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUndupNeuron)>);
     std::shared_ptr<CTagIndexChecker> m_spChecker;
     std::shared_ptr<CNeuronPool> m_spNeurPool;
+    
+    // log
     std::ofstream m_log;
 };
 
 CLayerWork::CLayerWork(ILifeCycle& lc, CLayer& owner, CLayerGenerator& gen)
 : mp(std::make_shared<CPrivate>(lc, owner, gen))
 {
-
 }
 
 void CLayerWork::operator()()
@@ -114,6 +115,8 @@ void CLayerWork::operator()()
             mp->log() << "idle" << std::endl;
         }
 	}
+    
+    mp->dump();
 }
 
 class CLayer::CPrivate : public CNoCopyable
@@ -122,12 +125,12 @@ public:
 	~CPrivate() final = default;
 };
 
-CLayer::CLayer() : CLayer(std::thread())
+CLayer::CLayer(size_t tag) : CLayer(std::thread(), tag)
 {}
 
-CLayer::CLayer(std::thread &&t) : mp(std::make_shared<CPrivate>())
+CLayer::CLayer(std::thread &&thd, size_t tag) : m_tag(tag), mp(std::make_shared<CPrivate>())
 {
-    m_thread = std::move(t);
+    m_thread = std::move(thd);
 }
 
 CLayer& CLayer::operator=(std::thread && t)
@@ -139,7 +142,7 @@ CLayer& CLayer::operator=(std::thread && t)
 CLayer* CLayerGenerator::getNewLayer()
 {
     std::lock_guard<std::mutex> _(m_mutex);
-    auto spLayer = std::make_shared<CLayer>();
+    auto spLayer = std::make_shared<CLayer>(m_vecLayers.size());
     m_vecLayers.push_back(spLayer);
     return spLayer.get();
 }
@@ -147,7 +150,7 @@ CLayer* CLayerGenerator::getNewLayer()
 CLayer* CLayerGenerator::getNewLayer(ILifeCycle& lc)
 {
     std::lock_guard<std::mutex> _(m_mutex);
-    auto spLayer = std::make_shared<CLayer>();
+    auto spLayer = std::make_shared<CLayer>(m_vecLayers.size());
     m_vecLayers.push_back(spLayer);
     
     auto spWork = std::make_shared<CLayerWork>(lc, *spLayer, *this);
@@ -160,7 +163,7 @@ CLayer* CLayerGenerator::getNewLayer(ILifeCycle& lc)
 CLayer& CLayerGenerator::getNewLayer(std::thread&& t)
 {
     std::lock_guard<std::mutex> _(m_mutex);
-    auto spLayer = std::make_shared<CLayer>(std::move(t));
+    auto spLayer = std::make_shared<CLayer>(std::move(t), m_vecLayers.size());
     m_vecLayers.push_back(spLayer);
     return *spLayer;
 }
@@ -176,8 +179,6 @@ void CLayerWork::CPrivate::buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUn
         spDendrite->attach(spAxon);
         spAxon->attach(spDendrite);
     });
-    
-    nextlayer().Send(std::make_unique<CEmotion>(newNeur->m_tag));
 }
 
 void CLayerWork::CPrivate::Motivate(std::unique_ptr<CEmotion> e)
@@ -202,6 +203,9 @@ void CLayerWork::CPrivate::Motivate(std::unique_ptr<CEmotion> e)
         if (spIdx->Size() > 1 && m_spChecker->Insert(spIdx)) {
             // check build association
             buildAssoiatedNeuron(spUndupNeur);
+            //
+//            nextlayer().Send(std::make_unique<CEmotion>(newNeur->m_tag));
+
         }
         
         m_tagUndupped.insert(e->m_tag);
@@ -217,4 +221,45 @@ CLayerWork* CLayerGenerator::getNewWork(nsAI::ILifeCycle &lc, CLayer &owner)
     auto spWork = std::make_shared<CLayerWork>(lc, owner, *this);
     m_vecWork.push_back(spWork);
     return spWork.get();
+}
+
+void CLayerWork::CPrivate::dump() {
+    log() << ">>> Conscious dumping..." << std::endl;
+    log() << "------------8<------------8<------------" << std::endl;
+    
+    auto upPoolAcc = m_spNeurPool->getAccessor();
+    auto neurNum = upPoolAcc->getSize();
+    log() << "all neuron number : " << neurNum << std::endl;
+    auto upCur = upPoolAcc->getFirst();
+    for (size_t i = 0; i < neurNum; i++) {
+        auto spNeur = upPoolAcc->getNext(upCur.get());
+        auto upAxonAcc = spNeur->getAxonAccessor();
+        log() << "tag[" << spNeur->m_tag << "] : " << CEmotion::echo(spNeur->m_tag) << std::endl;
+        log() << "\t" << upAxonAcc->getSize() << " axon(s), " << std::endl;
+        // log the axon info
+        auto upAxonCur = upAxonAcc->getFirst();
+        for (size_t i = 0; i < upAxonAcc->getSize(); i++) {
+            auto spAxon = upAxonAcc->getNext(upAxonCur.get());
+            auto spDadDendri = spAxon->getDendrite();
+            auto destTag = spDadDendri->getOwner()->m_tag;
+            log() << "\taxon[" << i << "] --> neuron[" << destTag << "] : " << CEmotion::echo(destTag) << std::endl;
+        }
+        
+        auto upDenAcc = spNeur->getDendriAccessor();
+        log() << "\t" << upDenAcc->getSize() << " dendrite(s)" << std::endl;
+        auto upDendriCur = upDenAcc->getFirst();
+        size_t denCnt = 0;
+        while (!upDenAcc->isEnded(upDendriCur.get())) {
+            auto spDendri = upDenAcc->getNext(upDendriCur.get());
+            auto upDenAxnAcc = spDendri->getAxonAccessor();
+            log() << "\t\tden[" << denCnt++ << "] <-- " << upDenAxnAcc->getSize() << " axon(s) from neuron(s) by" << std::endl;
+            
+            auto upDenAxnCur = upDenAxnAcc->getFirst();
+            while (!upDenAxnAcc->isEnded(upDenAxnCur.get())) {
+                auto spDenAxn = upDenAxnAcc->getNext(upDenAxnCur.get());
+                auto spDenAxnOwnerNeur = spDenAxn->getOwner();
+                log() << "\t\t\ttag[" << spDenAxnOwnerNeur->m_tag << "] : " << CEmotion::echo(spDenAxnOwnerNeur->m_tag) << std::endl;
+            }
+        }
+    }
 }

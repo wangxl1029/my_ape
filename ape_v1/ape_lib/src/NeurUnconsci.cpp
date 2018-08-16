@@ -56,4 +56,5 @@ void CReflect::operator()()
 			layerPool.Send(std::move(e));
 		}
 	}
+    layerPool.Kill();
 }

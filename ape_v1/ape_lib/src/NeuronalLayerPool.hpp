@@ -18,6 +18,7 @@ namespace nsAI {
         public:
             CLayerPool();
             void Send(std::unique_ptr<CEmotion>);
+            void Kill();
         private:
             std::shared_ptr<CPrivate> mp;
         };
