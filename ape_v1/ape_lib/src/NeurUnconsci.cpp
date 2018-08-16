@@ -14,18 +14,12 @@
 
 #include "NeuronalLayerPool.hpp"
 
-namespace nsAI {
-    namespace nsNeuronal{
-        
-    }
-}
 
+using namespace nsAI::nsNeuronal;
 
-namespace ns_ = nsAI::nsNeuronal;
-
-void ns_::CReflect::operator()()
+void CReflect::operator()()
 {
-    CLayerPool layerPool;
+	CLayerPool layerPool;
 	while (m_pCortex->isAlive())
 	{
 		auto e = m_pUnconsci->getEmotion();
@@ -59,9 +53,7 @@ void ns_::CReflect::operator()()
 			e = triggerReflexUnconsciously(std::move(e));
 
 			//m_pMind->Send(std::move(e));
-            layerPool.Send(std::move(e));
+			layerPool.Send(std::move(e));
 		}
 	}
-    
-    
 }

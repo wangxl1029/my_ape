@@ -20,59 +20,56 @@
 #include "NeurEmotion.hpp"
 #include "EmotionTarget.hpp"
 #include "NeuronDef.hpp"
-#include "NeuronalPool.hpp"
 #include "NeurLayer.hpp"
 
+#ifdef _WIN32
+using namespace nsAI;
+#endif // _WIN32
 using namespace nsAI::nsNeuronal;
 
 CLayerLifeCycle::CLayerLifeCycle()
 {
-    Reset(true);
+	Reset(true);
 }
 
 void CLayerLifeCycle::Reset(bool val = false)
 {
-    m_alive.store(val);
+	m_alive.store(val);
 }
 
 bool CLayerLifeCycle::isAlive()
 {
-    return m_alive.load();
+	return m_alive.load();
 }
 
 CLayerWork::CLayerWork(ILifeCycle& lc) : m_lc(lc)
 {
-    
+
 }
 
 void CLayerWork::operator()()
 {
-    while (m_lc.isAlive()) {
-        ;
-    }
+	while (m_lc.isAlive()) {
+		;
+	}
 }
 
-class CLayer::CPrivate : public CObject
+class CLayer::CPrivate : public CNoCopyable
 {
 public:
+	CPrivate() = default;
 };
 
 CLayer::CLayer() : mp(std::make_shared<CPrivate>())
 {
-    
+
 }
 
-CLayerProxy::CLayerProxy(CLayerProxy&& other)
+CLayerProxy::CLayerProxy() : m_spProxy(std::make_shared<CLayer>())
 {
-    m_spLayer = std::move(other.m_spLayer);
-    //m_mutex = std::move(other.m_mutex);
+	m_pLayer = m_spProxy.get();
 }
 
 void CLayerProxy::Send_TS(std::unique_ptr<CEmotion> e) {
-    std::unique_lock<std::mutex> lk;
-    if ( ! m_spLayer) {
-        m_spLayer = std::make_shared<CLayer>();
-    }lk.unlock();
-    
-    return m_spLayer->Send(std::move(e));
+	return m_pLayer->Send(std::move(e)); // the send method of layer is thread-safe.
 }

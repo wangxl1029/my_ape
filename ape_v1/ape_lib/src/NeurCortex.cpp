@@ -15,12 +15,12 @@
 #include "BusClient.hpp"
 #include "NeurUnconsci.hpp"
 #include "NeurConscious.hpp"
+#include "NeurInstinct.hpp"
 #include "NeurCortex.hpp"
-//#include "NeurLayer.hpp"
 
-namespace ns_ = nsAI::nsNeuronal;
+using namespace nsAI::nsNeuronal;
 
-ns_::CInstinct::CInstinct()
+inline nsAI::nsNeuronal::CInstinct::CInstinct()
 	: m_pOwner(nullptr)
 	, m_pUnconsci(nullptr)
 	, m_isSleeping(false)
@@ -30,16 +30,16 @@ ns_::CInstinct::CInstinct()
 {
 }
 
-void ns_::CInstinct::Initialize(nsAI::nsNeuronal::CBusClient *owner, nsAI::nsNeuronal::CEmotionTarget *sensor)
+void CInstinct::Initialize(nsAI::nsNeuronal::CBusClient *owner, nsAI::nsNeuronal::CEmotionTarget *sensor)
 {
 	m_pOwner = owner;
 	m_pUnconsci = sensor;
 }
 
-void ns_::CInstinct::operator()()
+void CInstinct::operator()()
 {
 	assert(m_pOwner);
-//    auto spNL = std::make_shared<CLayer>();
+	//    auto spNL = std::make_shared<CLayer>();
 
 	while (m_pOwner->isAlive())
 	{
@@ -111,7 +111,7 @@ void ns_::CInstinct::operator()()
 	}
 }
 
-void ns_::CInstinct::relex()
+void CInstinct::relex()
 {
 	if (m_nHungery > 0)
 	{
@@ -123,6 +123,5 @@ void ns_::CInstinct::relex()
 	{
 		m_nCrying = 0;
 	}
-
 }
 

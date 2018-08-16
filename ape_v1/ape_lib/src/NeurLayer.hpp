@@ -22,15 +22,6 @@ namespace nsAI {
             std::atomic_bool m_alive;
         };
         
-        class CLayerWork
-        {
-        public:
-            CLayerWork(ILifeCycle&);
-            void operator()();
-        private:
-            ILifeCycle& m_lc;
-        };
-        
         class CLayer : public CEmotionTarget
         {
             class CPrivate;
@@ -44,15 +35,24 @@ namespace nsAI {
         class CLayerProxy : public CObject
         {
         public:
-            CLayerProxy() = default;
-            CLayerProxy(CLayerProxy&&);
+            CLayerProxy();
             ~CLayerProxy() final = default;
             void Send_TS(std::unique_ptr<CEmotion>);
         private:
-            std::mutex m_mutex;
-            std::shared_ptr<CLayer> m_spLayer;
+            std::shared_ptr<CLayer> m_spProxy;
+			CLayer* m_pLayer;
         };
-    }
+
+		class CLayerWork
+		{
+		public:
+			CLayerWork(ILifeCycle&);
+			void operator()();
+		private:
+			ILifeCycle & m_lc;
+			std::shared_ptr<CLayerProxy> m_spProxy;
+		};
+	}
 }
 
 #endif /* neur_priv_hpp */

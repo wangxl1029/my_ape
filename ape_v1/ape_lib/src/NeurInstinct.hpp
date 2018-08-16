@@ -18,7 +18,7 @@ namespace nsAI {
             static const size_t HANGERY_MAX = 100;
             static const size_t CRYING_MAX = 100;
             
-            CInstinct();
+			CInstinct();
             ~CInstinct() final = default;
             
             void Initialize(CBusClient* owner, CEmotionTarget* sensor);

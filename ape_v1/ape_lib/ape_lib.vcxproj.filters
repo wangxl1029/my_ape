@@ -15,126 +15,141 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ape_lib\ai_priv.hpp">
+    <ClInclude Include="src\ai_access.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\ape_brain.hpp">
+    <ClInclude Include="src\ai_access_imp.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\ape_input.hpp">
+    <ClInclude Include="src\ai_active.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\ape_output.hpp">
+    <ClInclude Include="src\ai_predicate.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\BusClient.hpp">
+    <ClInclude Include="src\ape_brain.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\BusMessage.hpp">
+    <ClInclude Include="src\ape_input.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\BusMsgTarget.hpp">
+    <ClInclude Include="src\ape_output.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\BusProxy.hpp">
+    <ClInclude Include="src\ape_spine.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\EmotionTarget.hpp">
+    <ClInclude Include="src\BusClient.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\IBusServer.hpp">
+    <ClInclude Include="src\BusMessage.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\NeurConscious.hpp">
+    <ClInclude Include="src\BusMsgTarget.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\NeurCortex.hpp">
+    <ClInclude Include="src\BusProxy.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\NeurEmotion.hpp">
+    <ClInclude Include="src\EmotionTarget.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\NeurInstinct.hpp">
+    <ClInclude Include="src\IBusServer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\NeurUnconsci.hpp">
+    <ClInclude Include="src\NeurAxon.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\ape_spine.hpp">
+    <ClInclude Include="src\NeurConscious.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\NeurAxon.hpp">
+    <ClInclude Include="src\NeurCortex.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\NeurDendrite.hpp">
+    <ClInclude Include="src\NeurDendrite.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\NeuronDef.hpp">
+    <ClInclude Include="src\NeurEmotion.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\neur_priv.hpp">
+    <ClInclude Include="src\NeurInstinct.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\CAccessor.hpp">
+    <ClInclude Include="src\NeurLayer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ape_lib\IAccessor.hpp">
+    <ClInclude Include="src\NeuronalLayerPool.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NeuronalPool.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NeuronDef.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NeurUnconsci.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ape_lib\ape.cpp">
+    <ClCompile Include="src\ape.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\ape_brain.cpp">
+    <ClCompile Include="src\ape_brain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\ape_input.cpp">
+    <ClCompile Include="src\ape_input.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\ape_output.cpp">
+    <ClCompile Include="src\ape_output.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\ape_spine.cpp">
+    <ClCompile Include="src\ape_spine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\BusClient.cpp">
+    <ClCompile Include="src\BusClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\BusMessage.cpp">
+    <ClCompile Include="src\BusMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\BusProxy.cpp">
+    <ClCompile Include="src\BusProxy.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\EmotionTarget.cpp">
+    <ClCompile Include="src\EmotionTarget.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\NeurConscious.cpp">
+    <ClCompile Include="src\NeurAxon.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\NeurCortex.cpp">
+    <ClCompile Include="src\NeurConscious.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\NeurEmotion.cpp">
+    <ClCompile Include="src\NeurCortex.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\NeurInstinct.cpp">
+    <ClCompile Include="src\NeurDendrite.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\NeurUnconsci.cpp">
+    <ClCompile Include="src\NeurEmotion.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\NeurAxon.cpp">
+    <ClCompile Include="src\NeurInstinct.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\NeurDendrite.cpp">
+    <ClCompile Include="src\NeurLayer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\NeuronDef.cpp">
+    <ClCompile Include="src\NeuronalLayerPool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ape_lib\neur_priv.cpp">
+    <ClCompile Include="src\NeuronalPool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NeuronDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NeurUnconsci.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

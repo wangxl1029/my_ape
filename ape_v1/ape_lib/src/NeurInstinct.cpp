@@ -7,6 +7,10 @@
 //
 #include <cassert>
 #include <iostream>
+
+#include "ai_comm.hpp"
+#include "EmotionTarget.hpp"
+#include "BusClient.hpp"
 #include "NeurInstinct.hpp"
 
 
