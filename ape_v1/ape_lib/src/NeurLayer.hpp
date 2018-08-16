@@ -39,12 +39,9 @@ namespace nsAI {
 		{
             class CPrivate;
 		public:
-			CLayerWork(ILifeCycle&, CLayer&);
-			void operator()(CLayerGenerator*);
+			CLayerWork(ILifeCycle&, CLayer& owner, CLayerGenerator&);
+			void operator()();
 		private:
-			ILifeCycle & m_lc;
-            CLayer& m_owner;
-            CLayer* m_pNext;
             std::shared_ptr<CPrivate> mp;
 		};
         

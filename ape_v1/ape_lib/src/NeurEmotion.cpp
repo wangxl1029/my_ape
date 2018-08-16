@@ -31,9 +31,14 @@ namespace nsAI {
 	};
 }
 
-nsAI::nsNeuronal::CEmotion::CEmotion(CEmotion_E t) : m_tag(static_cast<size_t>(t))
+nsAI::nsNeuronal::CEmotion::CEmotion(CEmotion_E t) : CEmotion(static_cast<size_t>(t))
 {
 
+}
+
+nsAI::nsNeuronal::CEmotion::CEmotion(size_t t) : m_tag(t)
+{
+    
 }
 
 std::string nsAI::nsNeuronal::CEmotion::echo(size_t tagval)

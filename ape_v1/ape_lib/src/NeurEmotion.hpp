@@ -30,6 +30,7 @@ namespace nsAI{
         public:
             static const size_t EMOTION_E_MAX = static_cast<size_t>(CEmotion_E::max);
 			CEmotion(CEmotion_E t);
+            explicit CEmotion(size_t t);
  			~CEmotion() override = default;
             
 			static std::string echo(size_t tagval);
