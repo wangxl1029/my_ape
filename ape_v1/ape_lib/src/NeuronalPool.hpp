@@ -31,17 +31,6 @@ namespace nsAI{
             std::set<std::shared_ptr<CTagIndex>, CSptrLess<CTagIndex> > m_indices;
         };
         
-        class CAssociatedNeuronBuilder : public CNoCopyable
-        {
-        public:
-            ~CAssociatedNeuronBuilder() final = default;
-            void checkOrBuild(std::shared_ptr<CTagIndex> spIdx,
-                              std::function<std::shared_ptr<CNeuron>()> fnbuildNeuron,
-                              std::function<void(size_t)> nfSendEmotion);
-        private:
-            std::map<std::shared_ptr<CTagIndex>, std::shared_ptr<CNeuron> , CSptrLess<CTagIndex> > m_data;
-        };
-        
         class CNeuronPool : public CNoCopyable
         {
         public:

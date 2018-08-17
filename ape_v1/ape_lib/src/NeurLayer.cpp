@@ -90,7 +90,6 @@ private:
     // associated neuron biulding helper
     std::set<size_t> m_tagUndupped;
     CTagIndex m_tagIdx;
-    CAssociatedNeuronBuilder m_builder;
     std::map<std::shared_ptr<CTagIndex>, std::shared_ptr<CNeuron> , CSptrLess<CTagIndex> > m_idxCache;
     std::vector< std::shared_ptr< CNeuron > > m_vecUndupNeuron;
     void buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUndupNeuron)>);
@@ -237,19 +236,7 @@ void CLayerWork::CPrivate::Motivate_v2(std::unique_ptr<CEmotion> e)
         
         auto spUndupNeur = std::make_shared<decltype(m_vecUndupNeuron)>();
         spUndupNeur->swap(m_vecUndupNeuron);
-#if 0
-        if (spIdx->Size() > 1 && m_spChecker->Insert(spIdx)) {
-            // check build association
-            buildAssoiatedNeuron(spUndupNeur);
-            //
-            //            nextlayer().Send(std::make_unique<CEmotion>(newNeur->m_tag));
-            
-        }
-#else
         if (spIdx->Size() > 1) {
-            m_builder.checkOrBuild(spIdx,
-                                   [=]() {return m_spNeurPool->buildNeuron(CEmotion::getUniqueTag());},
-                                   [&](size_t tag)-> void {nextlayer().Send(std::make_unique<CEmotion>(tag));});
             decltype(m_idxCache)::iterator it;
             std::tie(it, ok) = m_idxCache.emplace(spIdx, nullptr);
             if (ok) {
@@ -267,7 +254,7 @@ void CLayerWork::CPrivate::Motivate_v2(std::unique_ptr<CEmotion> e)
                 nextlayer().Send(std::make_unique<CEmotion>(it->second->m_tag));
             }
         }
-#endif
+        
         m_tagUndupped.insert(e->m_tag);
     }
     

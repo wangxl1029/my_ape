@@ -10,7 +10,6 @@
 #include <functional>
 #include <set>
 #include <vector>
-#include <map>
 #include <memory>
 
 #include "ai_comm.hpp"
@@ -45,22 +44,6 @@ namespace nsAI {
 		{
 			return m_indices.insert(spIdx).second;
 		}
-        
-        void CAssociatedNeuronBuilder::checkOrBuild(std::shared_ptr<CTagIndex> spIdx,
-                                                    std::function<std::shared_ptr<CNeuron> ()> fnbuildNeuron,
-                                                    std::function<void(size_t)> nfSendEmotion)
-        {
-            bool ok;
-            decltype(m_data)::iterator it;
-            std::tie(it, ok) = m_data.emplace(spIdx, nullptr);
-            if (ok) {
-                //res_pair.first->second = building the newNeuron;
-                it->second = fnbuildNeuron();
-            }else{
-                // next layer sending
-                nfSendEmotion(it->second->m_tag);
-            }
-        }
         
 		std::shared_ptr<CNeuron> CNeuronPool::buildNeuron(size_t tag)
 		{
