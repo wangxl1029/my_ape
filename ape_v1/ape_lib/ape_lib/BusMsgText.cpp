@@ -8,6 +8,7 @@
 #include <cassert>
 #include <iostream>
 
+
 #include "BusMessage.hpp"
 #include "BusMsgText.hpp"
 
@@ -17,6 +18,7 @@ nsAI::nsNeuronal::nsBus::CMsgText::CData::CData(const char* s)
 {
     assert(s);
     m_text = s;
+    //std::wstring ws;
 }
 
 std::unique_ptr<ns_::CMsgText::CData> ns_::CMsgText::getDataUniquePtr(std::unique_ptr<nsAI::CObject> upData)

@@ -7,15 +7,35 @@
 //
 #include <cassert>
 #include <iostream>
+#include <unordered_map>
 
 #include "ai_comm.hpp"
 #include "EmotionTarget.hpp"
 #include "BusClient.hpp"
 #include "NeurInstinct.hpp"
+#include "BusMsgText.hpp"
 
 using namespace nsAI::nsNeuronal;
 
-CInstinct::CInstinct()
+class CInstinct::CPrivate : public CNoCopyable
+{
+public:
+    CPrivate();
+    ~CPrivate() final = default;
+    void Process();
+    inline void relex();
+    
+    size_t              m_nHungery;
+    size_t              m_nCrying;
+    bool                m_isTired;
+    bool                m_isSleeping;
+    CBusClient*         m_pOwner;
+    CEmotionTarget*     m_pUnconsci;
+    
+    std::unordered_map<char, size_t> m_charDict;
+};
+
+CInstinct::CPrivate::CPrivate()
 : m_pOwner(nullptr)
 , m_pUnconsci(nullptr)
 , m_isSleeping(false)
@@ -25,13 +45,7 @@ CInstinct::CInstinct()
 {
 }
 
-void CInstinct::Initialize(nsAI::nsNeuronal::CBusClient *owner, nsAI::nsNeuronal::CEmotionTarget *sensor)
-{
-    m_pOwner = owner;
-    m_pUnconsci = sensor;
-}
-
-void CInstinct::operator()()
+void CInstinct::CPrivate::Process()
 {
     assert(m_pOwner);
     //    auto spNL = std::make_shared<CLayer>();
@@ -45,14 +59,14 @@ void CInstinct::operator()()
             switch (msg->m_ID)
             {
                 case nsBus::CMessageId_E::CORTEX_TEST:
-                    if (!m_isSleeping)
+                    if (! m_isSleeping)
                     {
                         m_pUnconsci->Send(std::make_unique<CEmotion>(CEmotion_E::input_test));
                     }
                     break;
                     
                 case nsBus::CMessageId_E::CORTEX_IDLE_INPUT:
-                    if (!m_isSleeping)
+                    if (! m_isSleeping)
                     {
                         m_pUnconsci->Send(std::make_unique<CEmotion>(CEmotion_E::input_absence));
                         if (m_nHungery++ <= HANGERY_MAX)
@@ -78,8 +92,21 @@ void CInstinct::operator()()
                 case nsBus::CMessageId_E::CORTEX_TEXT_INPUT:
                     if (!m_isSleeping)
                     {
-                        m_pUnconsci->Send(std::make_unique<CEmotion>(CEmotion_E::input_txt));
+                        auto upData = nsBus::CMsgText::getDataUniquePtr(std::move(msg->m_upData));
+                        for (size_t i = 0; nullptr != upData && i < upData->getCStrSize(); ++i) {
+                            auto c = upData->getCharAt(i);
+                            bool ok;
+                            decltype(m_charDict)::iterator it;
+                            std::tie(it, ok) = m_charDict.emplace(c, SIZE_T_MAX);
+                            auto& tag = it->second;
+                            if (ok) {
+                                tag = CEmotion::getUniqueTag();
+                            }
+                            assert(SIZE_T_MAX != tag);
+                            m_pUnconsci->Send(std::make_unique<CEmotion>(tag));
+                        }
                     }
+                    
                     break;
                     
                 default:
@@ -106,7 +133,22 @@ void CInstinct::operator()()
     }
 }
 
-void CInstinct::relex()
+CInstinct::CInstinct() : mp(std::make_shared<CPrivate>())
+{
+}
+
+void CInstinct::Initialize(nsAI::nsNeuronal::CBusClient *owner, nsAI::nsNeuronal::CEmotionTarget *sensor)
+{
+    mp->m_pOwner = owner;
+    mp->m_pUnconsci = sensor;
+}
+
+void CInstinct::operator()()
+{
+    return mp->Process();
+}
+
+void CInstinct::CPrivate::relex()
 {
     if (m_nHungery > 0)
     {

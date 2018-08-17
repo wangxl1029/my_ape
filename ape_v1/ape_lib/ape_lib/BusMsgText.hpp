@@ -18,8 +18,9 @@ namespace nsAI {namespace nsNeuronal{namespace nsBus{
         public:
             CData(const char* s); // s must NOT be nullptr
             ~CData() final = default;
-            
-        public:
+            size_t getCStrSize() const {return m_text.size();}
+            char getCharAt(size_t pos) const {return m_text.at(pos);}
+        private:
             std::string m_text;
         };
         
