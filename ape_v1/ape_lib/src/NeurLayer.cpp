@@ -250,6 +250,22 @@ void CLayerWork::CPrivate::Motivate_v2(std::unique_ptr<CEmotion> e)
             m_builder.checkOrBuild(spIdx,
                                    [=]() {return m_spNeurPool->buildNeuron(CEmotion::getUniqueTag());},
                                    [&](size_t tag)-> void {nextlayer().Send(std::make_unique<CEmotion>(tag));});
+            decltype(m_idxCache)::iterator it;
+            std::tie(it, ok) = m_idxCache.emplace(spIdx, nullptr);
+            if (ok) {
+                auto newNeur = m_spNeurPool->buildNeuron(CEmotion::getUniqueTag());
+                auto spDendrite = newNeur->buildDendrite(newNeur);
+                std::for_each(spUndupNeur->begin(), spUndupNeur->end(),[spDendrite](std::shared_ptr<CNeuron> spN) {
+                    auto spAxon = spN->buildAxon(spN);
+                    spDendrite->attach(spAxon);
+                    spAxon->attach(spDendrite);
+                });
+                
+                it->second = newNeur;
+            }else{
+                // next layer sending
+                nextlayer().Send(std::make_unique<CEmotion>(it->second->m_tag));
+            }
         }
 #endif
         m_tagUndupped.insert(e->m_tag);
