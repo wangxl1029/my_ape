@@ -7,6 +7,7 @@
 //
 
 #include <atomic>
+
 #include "NeurEmotion.hpp"
 
 namespace nsAI {
@@ -31,12 +32,12 @@ namespace nsAI {
 	};
 }
 
-nsAI::nsNeuronal::CEmotion::CEmotion(CEmotion_E t) : CEmotion(static_cast<size_t>(t))
+nsAI::nsNeuronal::CEmotion::CEmotion(CEmotion_E t, size_t h) : CEmotion(static_cast<size_t>(t), h)
 {
 
 }
 
-nsAI::nsNeuronal::CEmotion::CEmotion(size_t t) : m_tag(t)
+nsAI::nsNeuronal::CEmotion::CEmotion(size_t t, size_t h) : m_tag(t), m_hint(h)
 {
     
 }

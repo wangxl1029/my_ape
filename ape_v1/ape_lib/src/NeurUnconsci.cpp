@@ -14,6 +14,9 @@
 
 #include "NeuronalLayerPool.hpp"
 
+namespace nsAI {namespace nsNeuronal{
+}} // enclosed nsAI::nsNeuronal
+
 
 using namespace nsAI::nsNeuronal;
 
@@ -49,11 +52,21 @@ void CReflect::operator()()
 				}
 			}
 
-			std::cout << "sensor: " << CEmotion::echo(e->m_tag) << std::endl;
-			e = triggerReflexUnconsciously(std::move(e));
+			//e = triggerReflexUnconsciously(std::move(e));
 
 			//m_pMind->Send(std::move(e));
-			layerPool.Send(std::move(e));
+#if 1
+            std::cout << "sensor: " << e->echo() << std::endl;
+            layerPool.Send(std::move(e));
+#else
+            if (static_cast<size_t>(nsAI::nsNeuronal::CEmotion_E::input_txt) == e->m_tag) {
+                std::cout << "sensor: " << CEmotion::echo(e->m_tag) << " hint : " << e->m_hint << std::endl;
+                layerPool.Send(std::make_unique<CEmotion>(e->m_hint));
+            }else{
+                std::cout << "sensor: " << CEmotion::echo(e->m_tag) << std::endl;
+                layerPool.Send(std::move(e));
+            }
+#endif
 		}
 	}
     layerPool.Kill();

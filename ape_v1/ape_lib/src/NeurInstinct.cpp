@@ -103,7 +103,7 @@ void CInstinct::CPrivate::Process()
                                 tag = CEmotion::getUniqueTag();
                             }
                             assert(SIZE_T_MAX != tag);
-                            m_pUnconsci->Send(std::make_unique<CEmotion>(tag));
+                            m_pUnconsci->Send(std::make_unique<CEmotionText>(tag, c));
                         }
                     }
                     

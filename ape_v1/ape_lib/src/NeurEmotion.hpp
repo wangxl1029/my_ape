@@ -29,22 +29,37 @@ namespace nsAI{
         {
         public:
             static const size_t EMOTION_E_MAX = static_cast<size_t>(CEmotion_E::max);
-			CEmotion(CEmotion_E t);
-            explicit CEmotion(size_t t);
+			CEmotion(CEmotion_E t, size_t h = SIZE_MAX);
+            explicit CEmotion(size_t t, size_t h = SIZE_MAX);
  			~CEmotion() override = default;
             
 			static std::string echo(size_t tagval);
+            virtual std::string echo() const {return echo(m_tag);}
             static size_t getUniqueTag();
             
             bool isNotConditional() const
             {
                 return m_tag < EMOTION_E_MAX;
             }
+            
             const size_t m_tag;
+            const size_t m_hint;
         private:
             
         };
         
+        class CEmotionText : public CEmotion
+        {
+        public:
+            CEmotionText(size_t tag, char c) : m_valChar(c)
+            , CEmotion(tag, static_cast<size_t>(CEmotion_E::input_txt)) {}
+            ~CEmotionText() final = default;
+            std::string echo() const final{
+                return CEmotion::echo(static_cast<size_t>(CEmotion_E::input_txt)) + " char : " + m_valChar;
+            }
+        private:
+            const char m_valChar;
+        };
     }
 }
 

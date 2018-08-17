@@ -222,7 +222,7 @@ void CLayerWork::CPrivate::Motivate(std::unique_ptr<CEmotion> e)
 
 void CLayerWork::CPrivate::Motivate_v2(std::unique_ptr<CEmotion> e)
 {
-    log() << "emotion tag " << CEmotion::echo(e->m_tag) << std::endl;
+    log() << "emotion tag " << e->echo() << std::endl;
     
     auto curNeur = m_spNeurPool->buildNeuron(e->m_tag);
     curNeur->strengthen();
