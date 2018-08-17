@@ -10,9 +10,14 @@ INDEX
 
 #### Release Note
 
-##### V1.1.0
+##### V1.1.2
 
-为了MAC/Windows平台都能编译ape，所以做了refactor，把原来的单一文件main分解成了各个模块的文件。
+- V1.1.2 : 实现了neuronal layer/neuronal layer pool，在neuronal layer pool中，实现了associated neuron的创建和迭代的发送到next layer。
+
+##### V1.1.[01]
+
+- V1.1.0 为了MAC/Windows平台都能编译ape，所以做了refactor，把原来的单一文件main分解成了各个模块的文件。
+- V1.1.1 在windows平台build OK.
 
 ###### Feature List
 - [x] Refactor : 原来的CMemory分解到各个Module里去了。
@@ -22,7 +27,10 @@ INDEX
 - [x] Implement : axon / drentrite, neuron.
 
 ###### Todo List
-（略）
+
+- [ ] Neuron header refactor.
+
+
 ###### Iusse
 （无）
 ###### Conception
