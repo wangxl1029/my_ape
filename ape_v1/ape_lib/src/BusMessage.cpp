@@ -9,29 +9,4 @@
 #include <iostream>
 #include "BusMessage.hpp"
 
-namespace ns_ = nsAI::nsNeuronal::nsBus;
-
-nsAI::nsNeuronal::nsBus::CMsgText::CData::CData(const char* s)
-{
-	assert(s);
-	m_text = s;
-}
-
-std::unique_ptr<ns_::CMsgText::CData> ns_::CMsgText::getDataUniquePtr(std::unique_ptr<nsAI::CObject> upData)
-{
-	if (upData)
-	{
-		auto p = dynamic_cast<CData*>(upData.get());
-		if (p)
-		{
-			upData.release();
-			return std::unique_ptr<CData>(p);
-		}
-		else
-		{
-			std::cerr << "base/derived not matched" << std::endl;
-		}
-	}
-	return nullptr;
-}
 

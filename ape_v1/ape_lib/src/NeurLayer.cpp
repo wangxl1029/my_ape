@@ -34,9 +34,11 @@ using namespace nsAI;
 using namespace nsAI::nsNeuronal;
 
 #ifdef _WIN32
-char log_root[] = R"(C:\Users\win 10\)";
+//char log_root[] = R"(C:\Users\win 10\)";
+char log_root[] = R"(.\)";
 #elif defined(__APPLE__)
-char log_root[] = "/Users/alanking/Documents/my_AI/my_github/my_ape/ape_v1/ape_lib/";
+//char log_root[] = "/Users/alanking/Documents/my_AI/my_github/my_ape/ape_v1/ape_lib/";
+char log_root[] = "./";
 #endif // _WIN32
 
 class CLayerWork::CPrivate : public CNoCopyable

@@ -11,6 +11,7 @@
 #include "ape.hpp"
 #include "ape_input.hpp"
 #include "ape_spine.hpp"
+#include "BusMsgText.hpp"
 
 nsAI::CApe::CInput::CInput(std::shared_ptr<CSpine> spSpine)
 {
