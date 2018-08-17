@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <atomic>
 #include <cassert>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <set>

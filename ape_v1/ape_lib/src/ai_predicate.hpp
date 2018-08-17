@@ -16,6 +16,10 @@ namespace nsAI{
         {
             return (*lhs) < (*rhs);
         }
+        bool operator()(std::shared_ptr<_T> lhs, std::shared_ptr<_T> rhs) const
+        {
+            return (*lhs) < (*rhs);
+        }
     };
 
     namespace nsContPred{

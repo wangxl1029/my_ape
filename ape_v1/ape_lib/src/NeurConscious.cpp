@@ -8,6 +8,7 @@
 #include <cassert>
 #include <fstream>
 #include <algorithm>
+#include <map>
 #include <memory>
 #include <set>
 #include <unordered_set>
