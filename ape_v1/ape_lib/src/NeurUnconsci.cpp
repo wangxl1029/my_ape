@@ -25,9 +25,8 @@ using namespace nsAI::nsNeuronal;
 
 void CReflect::operator()()
 {
-	CLayerPool layerPool;
-	decltype(layerPool.m_propSendingEmotion)::data_type fnSendEmotion = std::bind(&CEmotionTarget::Send, m_pMind, std::placeholders::_1);
-	layerPool.m_propSendingEmotion.set(fnSendEmotion);
+	std::function<void(std::unique_ptr<CEmotion>)> fnSendEmotion = std::bind(&CEmotionTarget::Send, m_pMind, std::placeholders::_1);
+	CLayerPool layerPool(fnSendEmotion);
 	
 	while (m_pCortex->isAlive())
 	{

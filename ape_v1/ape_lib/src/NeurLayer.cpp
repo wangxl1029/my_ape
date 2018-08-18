@@ -18,9 +18,10 @@
 #include <vector>
 
 #include "ai_comm.hpp"
+#include "ai_access_imp.hpp"
 #include "ai_active.hpp"
 #include "ai_predicate.hpp"
-#include "ai_access_imp.hpp"
+#include "ai_prop.hpp"
 #include "NeurEmotion.hpp"
 #include "EmotionTarget.hpp"
 #include "NeurAxon.hpp"
@@ -45,8 +46,8 @@ char log_root[] = "./";
 class CLayerWork::CPrivate : public CNoCopyable
 {
 public:
-    CPrivate(ILifeCycle& lc, CLayer& owner, CLayerGenerator& gen)
-    : m_owner(owner), m_lc(lc) , m_gen(gen), m_pNextLayer(nullptr)
+    CPrivate(ILifeCycle& lc, CLayer& owner, CLayerGenerator& gen, std::function<void(std::unique_ptr<CEmotion>)> fnTrans)
+    : m_owner(owner), m_lc(lc) , m_gen(gen), m_pNextLayer(nullptr), m_fnTransEmotion(fnTrans)
     , m_spChecker(std::make_shared<CTagIndexChecker>())
     , m_spNeurPool(std::make_shared<CNeuronPool>())
     {
@@ -102,8 +103,8 @@ private:
     std::ofstream m_log;
 };
 
-CLayerWork::CLayerWork(ILifeCycle& lc, CLayer& owner, CLayerGenerator& gen)
-: mp(std::make_shared<CPrivate>(lc, owner, gen))
+CLayerWork::CLayerWork(ILifeCycle& lc, CLayer& owner, CLayerGenerator& gen, std::function<void(std::unique_ptr<CEmotion>)> fnTrans)
+: mp(std::make_shared<CPrivate>(lc, owner, gen, fnTrans))
 {
 }
 
@@ -144,38 +145,22 @@ CLayer& CLayer::operator=(std::thread && t)
     return *this;
 }
 
-CLayer* CLayerGenerator::getNewLayer()
+CLayer* CLayerGenerator::getNewLayer(ILifeCycle& lc, std::function<void(std::unique_ptr<CEmotion>)> fnTrans)
 {
     std::lock_guard<std::mutex> _(m_mutex);
-    auto spLayer = std::make_shared<CLayer>(m_vecLayers.size());
-    m_vecLayers.push_back(spLayer);
-    return spLayer.get();
-}
-
-CLayer* CLayerGenerator::getNewLayer(ILifeCycle& lc)
-{
-    std::lock_guard<std::mutex> _(m_mutex);
-    auto spLayer = std::make_shared<CLayer>(m_vecLayers.size());
+    auto spLayer = std::make_shared<CLayer>(m_vecLayers.size()); // the vector size as layer tag
     m_vecLayers.push_back(spLayer);
     
-    auto spWork = std::make_shared<CLayerWork>(lc, *spLayer, *this);
+    auto spWork = std::make_shared<CLayerWork>(lc, *spLayer, *this, fnTrans);
     m_vecWork.push_back(spWork);
     *spLayer = std::thread(*spWork);
     
     return spLayer.get();
 }
 
-CLayer& CLayerGenerator::getNewLayer(std::thread&& t)
-{
-    std::lock_guard<std::mutex> _(m_mutex);
-    auto spLayer = std::make_shared<CLayer>(std::move(t), m_vecLayers.size());
-    m_vecLayers.push_back(spLayer);
-    return *spLayer;
-}
-
 inline CLayer & CLayerWork::CPrivate::nextlayer() {
 	if (!m_pNextLayer) {
-		m_pNextLayer = m_gen.getNewLayer(m_lc);
+		m_pNextLayer = m_gen.getNewLayer(m_lc, m_fnTransEmotion);
 	}
 	return *m_pNextLayer;
 }
@@ -289,14 +274,6 @@ void CLayerWork::CPrivate::Motivate_v2(std::unique_ptr<CEmotion> e)
     m_vecUndupNeuron.push_back(curNeur);
 }
 
-
-CLayerWork* CLayerGenerator::getNewWork(nsAI::ILifeCycle &lc, CLayer &owner)
-{
-    std::lock_guard<std::mutex> _(m_mutex);
-    auto spWork = std::make_shared<CLayerWork>(lc, owner, *this);
-    m_vecWork.push_back(spWork);
-    return spWork.get();
-}
 
 void CLayerWork::CPrivate::dump() {
     log() << ">>> Conscious dumping..." << std::endl;

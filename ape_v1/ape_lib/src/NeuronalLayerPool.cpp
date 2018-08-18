@@ -42,8 +42,8 @@ class CLayerPool::CPrivate
     };
 
 public:
-	CPrivate() {
-        m_pRoot = m_gen.getNewLayer(m_lifeCycle);
+	CPrivate(std::function<void(std::unique_ptr<CEmotion>)> fnSend) {
+        m_pRoot = m_gen.getNewLayer(m_lifeCycle, fnSend);
     };
     CLayer* m_pRoot;
     CLayerGenerator m_gen;
@@ -65,7 +65,7 @@ bool CLayerPool::CPrivate::CLayerLifeCycle::isAlive()
     return m_alive.load();
 }
 
-CLayerPool::CLayerPool() : mp(std::make_shared<CPrivate>())
+CLayerPool::CLayerPool(std::function<void(std::unique_ptr<CEmotion>)> fnSend) : mp(std::make_shared<CPrivate>(fnSend))
 {
 
 }

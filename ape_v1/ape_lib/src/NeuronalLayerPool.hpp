@@ -16,11 +16,9 @@ namespace nsAI {
         {
             class CPrivate;
         public:
-            CLayerPool();
+            CLayerPool(std::function<void(std::unique_ptr<CEmotion>)>);
             void Send(std::unique_ptr<CEmotion>);
             void Kill();
-
-			CProperty_TSRW<std::function<void(std::unique_ptr<CEmotion>)>> m_propSendingEmotion;
         private:
             std::shared_ptr<CPrivate> mp;
         };

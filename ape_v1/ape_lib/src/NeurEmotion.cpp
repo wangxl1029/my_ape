@@ -78,6 +78,6 @@ size_t nsAI::nsNeuronal::CEmotion::getUniqueTag()
 	return gen.getUniqueTag();
 }
 
-inline std::string nsAI::nsNeuronal::CEmotionText::echo() const {
+std::string nsAI::nsNeuronal::CEmotionText::echo() const {
 	return CEmotion::echo(static_cast<size_t>(CEmotion_E::input_txt)) + " char : " + m_valChar;
 }

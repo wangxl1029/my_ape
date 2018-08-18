@@ -9,11 +9,13 @@
 #include <fstream>
 #include <algorithm>
 #include <memory>
+#include <mutex>
 #include <set>
 #include <unordered_set>
 #include <vector>
 
 #include "ai_comm.hpp"
+#include "ai_prop.hpp"
 #include "BusClient.hpp"
 #include "EmotionTarget.hpp"
 #include "ai_access_imp.hpp"

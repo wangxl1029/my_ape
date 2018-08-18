@@ -30,7 +30,7 @@ namespace nsAI {
 		{
             class CPrivate;
 		public:
-			CLayerWork(ILifeCycle&, CLayer& owner, CLayerGenerator&);
+			CLayerWork(ILifeCycle&, CLayer& owner, CLayerGenerator&, std::function<void(std::unique_ptr<CEmotion>)>);
 			void operator()();
 		private:
             std::shared_ptr<CPrivate> mp;
@@ -38,11 +38,8 @@ namespace nsAI {
         
         class CLayerGenerator : public CNoCopyable
         {
-        public:
-            CLayer* getNewLayer();
-            CLayer* getNewLayer(ILifeCycle& lc);
-            CLayer& getNewLayer(std::thread&&);
-            CLayerWork* getNewWork(ILifeCycle& lc, CLayer&);
+		public:
+            CLayer* getNewLayer(ILifeCycle& lc, std::function<void(std::unique_ptr<CEmotion>)>);
         private:
             std::mutex m_mutex;
             std::vector< std::shared_ptr< CLayer > > m_vecLayers;
