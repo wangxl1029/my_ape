@@ -90,6 +90,12 @@
     <ClInclude Include="src\NeurUnconsci.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\BusMsgText.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ai_prop.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ape.cpp">
@@ -150,6 +156,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\NeurUnconsci.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BusMsgText.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

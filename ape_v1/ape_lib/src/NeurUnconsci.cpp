@@ -6,8 +6,11 @@
 //  Copyright © 2018 alan king. All rights reserved.
 //
 
+#include <atomic>
 #include <iostream>
+#include <mutex>
 
+#include "ai_prop.hpp"
 #include "EmotionTarget.hpp"
 #include "BusClient.hpp"
 #include "NeurUnconsci.hpp"
@@ -23,6 +26,9 @@ using namespace nsAI::nsNeuronal;
 void CReflect::operator()()
 {
 	CLayerPool layerPool;
+	decltype(layerPool.m_propSendingEmotion)::data_type fnSendEmotion = std::bind(&CEmotionTarget::Send, m_pMind, std::placeholders::_1);
+	layerPool.m_propSendingEmotion.set(fnSendEmotion);
+	
 	while (m_pCortex->isAlive())
 	{
 		auto e = m_pUnconsci->getEmotion();

@@ -19,6 +19,7 @@
 #include "ai_active.hpp"
 #include "ai_predicate.hpp"
 #include "ai_access_imp.hpp"
+#include "ai_prop.hpp"
 #include "NeurEmotion.hpp"
 #include "EmotionTarget.hpp"
 #include "NeuronDef.hpp"
@@ -39,7 +40,7 @@ class CLayerPool::CPrivate
     private:
         std::atomic_bool m_alive;
     };
-    
+
 public:
 	CPrivate() {
         m_pRoot = m_gen.getNewLayer(m_lifeCycle);

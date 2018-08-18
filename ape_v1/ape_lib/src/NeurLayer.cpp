@@ -9,6 +9,7 @@
 #include <atomic>
 #include <cassert>
 #include <fstream>
+#include <functional>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -55,7 +56,7 @@ public:
     }
     
     ~CPrivate() final = default;
-    void Motivate(std::unique_ptr<CEmotion>);
+    void Motivate(std::unique_ptr<CEmotion>); // deprecated
     void Motivate_v2(std::unique_ptr<CEmotion>);
     std::ofstream& log()
     {
@@ -63,7 +64,7 @@ public:
         return m_log;
     }
     
-    bool isAlive()
+    bool isAlive() const
     {
         return m_lc.isAlive();
     }
@@ -82,20 +83,19 @@ private:
     
     // next layer
     CLayer* m_pNextLayer;
-    CLayer& nextlayer(){
-        if (! m_pNextLayer) {
-            m_pNextLayer = m_gen.getNewLayer(m_lc);
-        }
-        return *m_pNextLayer;
-    }
+	CLayer& nextlayer();
     
-    // associated neuron biulding helper
+	// emotion transfer
+	void Transfer(std::unique_ptr<CEmotion> e);
+	std::function<void(std::unique_ptr<CEmotion>)> m_fnTransEmotion;
+	
+	// associated neuron biulding helper
     std::set<size_t> m_tagUndupped;
     CTagIndex m_tagIdx;
     std::map<std::shared_ptr<CTagIndex>, std::shared_ptr<CNeuron> , CSptrLess<CTagIndex> > m_idxCache;
     std::vector< std::shared_ptr< CNeuron > > m_vecUndupNeuron;
-    void buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUndupNeuron)>);
-    std::shared_ptr<CTagIndexChecker> m_spChecker;
+    void buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUndupNeuron)>); // deprecated
+    std::shared_ptr<CTagIndexChecker> m_spChecker; // deprecated
     std::shared_ptr<CNeuronPool> m_spNeurPool;
     
     // log
@@ -173,6 +173,13 @@ CLayer& CLayerGenerator::getNewLayer(std::thread&& t)
     return *spLayer;
 }
 
+inline CLayer & CLayerWork::CPrivate::nextlayer() {
+	if (!m_pNextLayer) {
+		m_pNextLayer = m_gen.getNewLayer(m_lc);
+	}
+	return *m_pNextLayer;
+}
+
 void CLayerWork::CPrivate::buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUndupNeuron)> spUndupNeur)
 {
     assert(spUndupNeur->size() > 1);
@@ -186,6 +193,7 @@ void CLayerWork::CPrivate::buildAssoiatedNeuron(std::shared_ptr<decltype(m_vecUn
     });
 }
 
+// deprecated
 void CLayerWork::CPrivate::Motivate(std::unique_ptr<CEmotion> e)
 {
     log() << "emotion tag " << CEmotion::echo(e->m_tag) << std::endl;
@@ -227,7 +235,8 @@ void CLayerWork::CPrivate::Motivate_v2(std::unique_ptr<CEmotion> e)
     auto curNeur = m_spNeurPool->buildNeuron(e->m_tag);
     curNeur->strengthen();
     
-    bool ok;
+	auto tagTrans = e->m_tag;
+	bool ok, flagTrans = true;
     std::tie(std::ignore, ok) = m_tagUndupped.insert(e->m_tag);
     if (!ok)
     {   // something dupped and clean the undupped tags
@@ -254,12 +263,28 @@ void CLayerWork::CPrivate::Motivate_v2(std::unique_ptr<CEmotion> e)
             }else{
                 // next layer sending
                 nextlayer().Send(std::make_unique<CEmotion>(it->second->m_tag));
+				flagTrans = false;
             }
-        }
+
+			tagTrans = it->second->m_tag;
+		}
+		else if(spIdx->Size() == 1)
+		{
+			// actually the tagTrans is same with e->m_tag
+			tagTrans = spIdx->getSingleOne();
+		}
         
         m_tagUndupped.insert(e->m_tag);
-    }
-    
+	}
+	else
+	{
+		flagTrans = false;
+	}
+
+	if (flagTrans) {
+		Transfer(std::make_unique<CEmotion>(tagTrans));
+	}
+
     m_tagIdx.Add(e->m_tag);
     m_vecUndupNeuron.push_back(curNeur);
 }
@@ -312,4 +337,12 @@ void CLayerWork::CPrivate::dump() {
             }
         }
     }
+}
+
+void CLayerWork::CPrivate::Transfer(std::unique_ptr<CEmotion> e)
+{
+	if (m_fnTransEmotion)
+	{
+		m_fnTransEmotion(std::move(e));
+	}
 }

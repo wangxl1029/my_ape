@@ -54,9 +54,7 @@ namespace nsAI{
             CEmotionText(size_t tag, char c) : m_valChar(c)
             , CEmotion(tag, static_cast<size_t>(CEmotion_E::input_txt)) {}
             ~CEmotionText() final = default;
-            std::string echo() const final{
-                return CEmotion::echo(static_cast<size_t>(CEmotion_E::input_txt)) + " char : " + m_valChar;
-            }
+			std::string echo() const final;
         private:
             const char m_valChar;
         };

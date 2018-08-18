@@ -77,3 +77,7 @@ size_t nsAI::nsNeuronal::CEmotion::getUniqueTag()
 	static CTagGenerator gen(EMOTION_E_MAX);
 	return gen.getUniqueTag();
 }
+
+inline std::string nsAI::nsNeuronal::CEmotionText::echo() const {
+	return CEmotion::echo(static_cast<size_t>(CEmotion_E::input_txt)) + " char : " + m_valChar;
+}

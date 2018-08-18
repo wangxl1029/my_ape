@@ -3,7 +3,7 @@
 //  ape_lib
 //
 //  Created by alan king on 2018/8/14.
-//  Copyright © 2018年 alan king. All rights reserved.
+//  Copyright © 2018 alan king. All rights reserved.
 //
 
 #include <algorithm>
@@ -38,6 +38,11 @@ namespace nsAI {
 		void CTagIndex::Swap(nsAI::nsNeuronal::CTagIndex & other)
 		{
 			m_tagSeq.swap(other.m_tagSeq);
+		}
+
+		size_t CTagIndex::getSingleOne() const
+		{
+			return m_tagSeq.front();
 		}
 
 		bool CTagIndexChecker::Insert(std::shared_ptr<CTagIndex> spIdx)

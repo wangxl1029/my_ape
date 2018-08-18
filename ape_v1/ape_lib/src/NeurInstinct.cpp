@@ -48,7 +48,6 @@ CInstinct::CPrivate::CPrivate()
 void CInstinct::CPrivate::Process()
 {
     assert(m_pOwner);
-    //    auto spNL = std::make_shared<CLayer>();
     
     while (m_pOwner->isAlive())
     {

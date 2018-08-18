@@ -17,6 +17,7 @@ namespace nsAI{
             bool operator<(const CTagIndex&) const;
             void Add(size_t);
             void Swap(CTagIndex&);
+			size_t getSingleOne() const;
             size_t Size() const;
         private:
             std::vector< size_t > m_tagSeq;
